@@ -8,3 +8,7 @@ DemoMicroservice/DemoService.Microservice/obj/
 DemoMicroservice/DemoService.SQL/bin/
 DemoMicroservice/DemoService.SQL/obj/
 DemoMicroservice/obj/
+DemoMicroservice/DemoService.Client.NetCore/obj/
+DemoMicroservice/DemoService.Client.NetCore/bin/
+DemoMicroservice/DemoService.IntegrationTests/bin/
+DemoMicroservice/DemoService.IntegrationTests/obj/

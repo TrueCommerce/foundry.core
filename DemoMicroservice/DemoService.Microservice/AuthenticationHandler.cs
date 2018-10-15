@@ -125,56 +125,58 @@ namespace DemoService.Microservice
 				#region validate and parse token
 				try
 				{
-					string token = authorizationString.Substring(7);
-					var tokenHandler = new JwtSecurityTokenHandler();
+					//string token = authorizationString.Substring(7);
+					//var tokenHandler = new JwtSecurityTokenHandler();
 
-					if (!(tokenHandler.ReadToken(token) is JwtSecurityToken))
-					{
-						await _next(httpContext);
+					//if (!(tokenHandler.ReadToken(token) is JwtSecurityToken))
+					//{
+					//	await _next(httpContext);
 
-						return;
-					}
+					//	return;
+					//}
 
-					var symmetricKey = Convert.FromBase64String(_configuration["JwtSecret"]);
+					//var symmetricKey = Convert.FromBase64String(_configuration["JwtSecret"]);
 
-					var validationParameters = new TokenValidationParameters()
-					{
-						RequireExpirationTime = true,
-						ValidateIssuer = false,
-						ValidateAudience = false,
-						IssuerSigningKey = new SymmetricSecurityKey(symmetricKey)
-					};
+					//var validationParameters = new TokenValidationParameters()
+					//{
+					//	RequireExpirationTime = true,
+					//	ValidateIssuer = false,
+					//	ValidateAudience = false,
+					//	IssuerSigningKey = new SymmetricSecurityKey(symmetricKey)
+					//};
 
-					var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
+					//var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
 
-					if (!(principal.Identity is ClaimsIdentity identity))
-					{
-						await _next(httpContext);
+					//if (!(principal.Identity is ClaimsIdentity identity))
+					//{
+					//	await _next(httpContext);
 
-						return;
-					}
+					//	return;
+					//}
 
-					var claim = identity.FindFirst(ClaimTypes.Name);
-					userName = claim?.Value;
+					//var claim = identity.FindFirst(ClaimTypes.Name);
+					//userName = claim?.Value;
 
-					if (string.IsNullOrEmpty(userName))
-					{
-						await _next(httpContext);
+					//if (string.IsNullOrEmpty(userName))
+					//{
+					//	await _next(httpContext);
 
-						return;
-					}
+					//	return;
+					//}
 
-					claim = identity.FindFirst(ODataUtils.JwtClaimTypeTenantId);
+					//claim = identity.FindFirst(ODataUtils.JwtClaimTypeTenantId);
 					// ReSharper disable once RedundantAssignment
-					tenantId = claim?.Value;
+					//tenantId = claim?.Value;
+					tenantId = string.Empty;
 
-					claim = identity.FindFirst(ODataUtils.JwtClaimTypeImpersonatedTenantId);
-					impersonatedTenantId = claim?.Value;
+					//claim = identity.FindFirst(ODataUtils.JwtClaimTypeImpersonatedTenantId);
+					//impersonatedTenantId = claim?.Value;
+					impersonatedTenantId = null;
 
-					claim = identity.FindFirst(ODataUtils.JwtClaimTypeSessionId);
-					if (claim?.Value != null)
-						if (Guid.TryParse(claim.Value, out var parsedSessionId))
-							sessionId = parsedSessionId == Guid.Empty ? null : (Guid?)parsedSessionId;
+					//claim = identity.FindFirst(ODataUtils.JwtClaimTypeSessionId);
+					//if (claim?.Value != null)
+					//	if (Guid.TryParse(claim.Value, out var parsedSessionId))
+					//		sessionId = parsedSessionId == Guid.Empty ? null : (Guid?)parsedSessionId;
 				}
 				catch (Exception e)
 				{

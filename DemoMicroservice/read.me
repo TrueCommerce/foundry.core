@@ -1,0 +1,68 @@
+--- Swagger playground ---
+http://localhost:8192/swagger
+
+
+1. Add new core entity type ----------
+
+DemoService.Core
+/Models - add entity and filters classes
+/Repositories - add repository interface
+/Services - add manager
+
+DemoService.SQL
+/Configurations - add table configuration
+MappingProfile.cs - add mapping from TEnriry to TEntity ignoring UserCreated and DateCreated properties
+SecurityDbContext.cs - add entity DbSet
+/Repositories - add entity repository
+UnitOfWork - add repository registration
+
+DemoService.Microservice
+/Controllers - add DTO controller
+/Controllers/TenantActionsController.cs - add import / export if need
+
+
+2. Recompile the whole solution ----------
+
+
+3. add migration and update developer db ----------
+
+-- start powershell and go to SQL project folder
+cd C:\Projects\foundry.core\DemoMicroservice\DemoService.SQL\
+
+-- add migration to the project ... it will register migration to create db table for the new entity
+dotnet ef migrations add [comment_no_spaces]
+
+-- update dev database (connection string is in MigrationsDbContextFactory.cs/SQLConnection)
+dotnet ef database update
+
+
+4. Recompile the whole solution ----------
+
+
+5. Start DemoService.Microservice ----------
+
+
+6. Generate clients ---
+
+regenerate T4 OData v4 clients:
+DemoService.Client.NetCore\OData\DemoServiceODataContext.tt
+DemoService.Client.Net4\OData\DemoServiceODataContext.tt
+
+DemoService.Client.NetCore
+OData/Models/ModelsDefinitions.cs
+- add partial model implementing IClientProxyModel
+
+
+7. xUnit Tests ----------
+
+DemoService.IntegrationTests
+\Tests - add xunit tests
+DemoServiceContextFixture.cs - add to DeleteTestData method
+
+--Recompile unit tests
+
+-- start xunit tests
+cd C:\Projects\foundry.core\DemoMicroservice\DemoService.IntegrationTests
+dotnet test
+-- or
+dotnet test -l "trx;LogFileName=testresults.trx"
