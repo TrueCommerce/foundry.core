@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <DockerTargetOS>Linux</DockerTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Projects\foundry.core\DemoMicroservice\DemoService.Microservice\DemoService.Microservice.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Foundry.Core" Version="0.1.5-alpha" />
+    <PackageReference Include="Foundry.Core.Microservice" Version="0.1.5-alpha" />
+    <PackageReference Include="Foundry.Core.Security.Client" Version="0.1.7-alpha" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.0.1916590" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DemoService.Core\DemoService.Core.csproj" />
+    <ProjectReference Include="..\DemoService.SQL\DemoService.SQL.csproj" />
+  </ItemGroup>
+
+</Project>

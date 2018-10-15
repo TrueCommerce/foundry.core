@@ -1,0 +1,10 @@
+*.dtbcache
+DemoMicroservice/.vs/
+DemoMicroservice/bin/
+DemoMicroservice/DemoService.Core/bin/
+DemoMicroservice/DemoService.Core/obj/
+DemoMicroservice/DemoService.Microservice/bin/
+DemoMicroservice/DemoService.Microservice/obj/
+DemoMicroservice/DemoService.SQL/bin/
+DemoMicroservice/DemoService.SQL/obj/
+DemoMicroservice/obj/
