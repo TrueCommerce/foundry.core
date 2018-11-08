@@ -4,21 +4,59 @@ services:
   rabbitmq:
     image: rabbitmq:3.7.7-management-alpine
     environment:
+      # RabbitMQ user
       - RABBITMQ_DEFAULT_USER=<rabbitmq user>
+      # RabbitMQ password
       - RABBITMQ_DEFAULT_PASS=<rabbitmq password>
     ports:
       - "15672:15672"
 
+  foundry.core.security.maintenance:
+    image: foundry.core.security.maintenance:0.7
+    depends_on:
+      - rabbitmq
+    environment:
+      # Core Security Microservice SQL connection string
+      - SQLConnection=<Core DB connection string>
+      # indicates whether to run Expired Sessions Cleaner task
+      - RunExpiredSessionsCleaner=true
+      # Expired Sessions Cleaner cycle. It will sleep for Cycle - Actual Work Time but not less than 30 seconds between cycles
+      - ExpiredSessionsCleanerCycle=0.00:03:00
+      # User Session timeout
+      - UserSessionTimeout=0.00:05:00
+      # indicates whether to run Expired Certificates Cleaner task
+      - RunExpiredCertificatesCleaner=true
+      # Expired Certificates Cleaner cycle. It will sleep for Cycle - Actual Work Time but not less than 30 seconds between cycles
+      - ExpiredCertificatesCleanerCycle=1.00:00:00
+      # Timeout to delete expired certificates (expired certificate will be deleted after specified timespan)
+      - ExpiredCertificateTimeout=10.00:00:00
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
   foundry_core_security_microservice:
-    image: truecommerce/foundry.core.security.microservice:0.1
+    image: truecommerce/foundry.core.security.microservice:0.7
     depends_on:
       - rabbitmq
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - SQLConnection=Server=<Core DB connection string>
+      # Core Security Microservice SQL connection string
+      - SQLConnection=<Core DB connection string>
+      # RabbitMQ connection string
       - RABBITMQ_CONNECTION=rabbitmq
+      # RabbitMQ user
       - RABBITMQ_USER=<rabbitmq user>
+      # RabbitMQ password
       - RABBITMQ_PASS=<rabbitmq password>
+      # JWT secret
+      - JwtSecret=<JWT secret string>
+      # JWT default expire time
+      - JwtDefaultExpireTime=0.00:30:00
+      # indicates whether to override user on logon
+      - OverrideUserOnLogOn=true
+      # user session timeout
+      - UserSessionTimeout=0.00:05:00
     ports:
       - "30100:80"
     deploy:
