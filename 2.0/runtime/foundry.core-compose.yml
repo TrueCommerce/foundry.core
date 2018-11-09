@@ -12,7 +12,7 @@ services:
       - "15672:15672"
 
   foundry.core.security.maintenance:
-    image: foundry.core.security.maintenance:0.7
+    image: foundry.core.security.maintenance:0.7.1
     depends_on:
       - rabbitmq
     environment:
