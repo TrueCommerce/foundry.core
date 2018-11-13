@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Foundry.Core.SQL" Version="0.1.5-alpha" />
+    <PackageReference Include="Foundry.Core.Shared.SQL" Version="0.1.7-alpha" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.4" />
   </ItemGroup>
 

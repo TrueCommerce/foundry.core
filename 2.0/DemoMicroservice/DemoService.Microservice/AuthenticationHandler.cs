@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Authentication;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Accellos.Platform.Security.Authentication;
@@ -15,7 +13,6 @@ using Foundry.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
-using Microsoft.IdentityModel.Tokens;
 
 namespace DemoService.Microservice
 {

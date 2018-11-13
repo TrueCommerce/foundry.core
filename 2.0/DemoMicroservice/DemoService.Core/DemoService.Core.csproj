@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Foundry.Core" Version="0.1.5-alpha" />
+    <PackageReference Include="Foundry.Core.Shared" Version="0.1.7-alpha" />
   </ItemGroup>
 
 </Project>

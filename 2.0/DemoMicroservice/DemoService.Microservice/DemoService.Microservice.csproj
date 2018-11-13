@@ -15,12 +15,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Foundry.Core" Version="0.1.5-alpha" />
-    <PackageReference Include="Foundry.Core.Microservice" Version="0.1.5-alpha" />
-    <PackageReference Include="Foundry.Core.Security.Client" Version="0.1.7-alpha" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="4.0.1" />
+    <PackageReference Include="Foundry.Core.Security.Client.NetCore" Version="0.1.7-alpha" />
+    <PackageReference Include="Foundry.Core.Shared.Services" Version="0.1.7-alpha" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.0.1916590" />
+    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>

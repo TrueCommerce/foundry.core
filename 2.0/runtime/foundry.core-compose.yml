@@ -19,6 +19,10 @@ services:
       - RABBITMQ_CONNECTION=rabbitmq
       - RABBITMQ_USER=<rabbitmq user>
       - RABBITMQ_PASS=<rabbitmq password>
+      - JwtSecret=<Jwt Secret>
+      - JwtDefaultExpireMinutes=30
+      - OverrideUserOnLogOn=true
+      - UserSessionTimeout=30
     ports:
       - "30100:80"
     deploy:

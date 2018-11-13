@@ -9,12 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Foundry.Core" Version="0.1.5-alpha" />
-    <PackageReference Include="Foundry.Core.Client.NetCore" Version="0.1.5-alpha" />
-    <PackageReference Include="Microsoft.OData.Client" Version="7.5.1" />
-    <PackageReference Include="Microsoft.OData.Core" Version="7.5.1" />
-    <PackageReference Include="Microsoft.OData.Edm" Version="7.5.1" />
-    <PackageReference Include="Microsoft.Spatial" Version="7.5.1" />
+    <PackageReference Include="Foundry.Core.Shared" Version="0.1.7-alpha" />
+    <PackageReference Include="Foundry.Core.Shared.Client.NetCore" Version="0.1.7-alpha" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.3.0" />
   </ItemGroup>
 
