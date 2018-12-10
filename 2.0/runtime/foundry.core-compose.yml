@@ -10,7 +10,7 @@ services:
       - "15672:15672"
 
   foundry_core_security_microservice:
-    image: truecommerce/foundry.core.security.microservice:0.1
+    image: truecommerce/foundry.core.security.microservice:0.8
     depends_on:
       - rabbitmq
     environment:
@@ -26,7 +26,7 @@ services:
     ports:
       - "30100:80"
     deploy:
-      replicas: 2
+      replicas: 1
       update_config:
         parallelism: 1
         delay: 10s
