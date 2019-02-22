@@ -3,6 +3,7 @@ version: '3.4'
 services:
   rabbitmq:
     image: rabbitmq:3.7.7-management-alpine
+    restart: always
     environment:
       # RabbitMQ user
       - RABBITMQ_DEFAULT_USER=<rabbitmq user>
@@ -14,6 +15,7 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
     container_name: elasticsearch
+    restart: always
     environment:
       - cluster.name=elasticsearch
       - network.host=0.0.0.0
@@ -33,6 +35,7 @@ services:
     depends_on:
       - elasticsearch
     image: docker.elastic.co/kibana/kibana:6.6.0
+    restart: always
     environment:
       - server.host=0
       - server.name=kibana
@@ -42,11 +45,12 @@ services:
       - 5601:5601
 
   foundry.core.security.maintenance:
-    image: truecommerce/foundry.core.security.maintenance:0.9
     depends_on:
       - rabbitmq
       - elasticsearch
       - kibana
+    image: truecommerce/foundry.core.security.maintenance:0.9
+    restart: always
     environment:
       # Core Security Microservice SQL connection string
       - Foundry__Security__SQLConnection=<Core DB connection string>
@@ -64,11 +68,12 @@ services:
       - Foundry__Security__ExpiredCertificatesCleaner__ExpiredCertificateTimeout=10.00:00:00
 
   foundry_core_security_microservice:
-    image: truecommerce/foundry.core.security.microservice:0.9
     depends_on:
       - rabbitmq
       - elasticsearch
       - kibana
+    image: truecommerce/foundry.core.security.microservice:0.9
+    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       # Core Security Microservice SQL connection string
