@@ -49,7 +49,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.maintenance:0.27
+    image: truecommerce/foundry.core.security.maintenance:0.30-beta
     restart: always
     environment:
       # Core Security Microservice SQL connection string
@@ -76,7 +76,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.microservice:0.27
+    image: truecommerce/foundry.core.security.microservice:0.30-beta
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
