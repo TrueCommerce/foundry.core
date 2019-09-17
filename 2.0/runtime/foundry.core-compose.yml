@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   rabbitmq:
-    image: rabbitmq:3.7.7-management-alpine
+    image: rabbitmq:3.7.17-management-alpine
     restart: always
     environment:
       # RabbitMQ user
@@ -13,7 +13,7 @@ services:
       - "15672:15672"
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
     container_name: elasticsearch
     restart: always
     environment:
@@ -34,7 +34,7 @@ services:
   kibana:
     depends_on:
       - elasticsearch
-    image: docker.elastic.co/kibana/kibana:6.6.1
+    image: docker.elastic.co/kibana/kibana:7.3.2
     restart: always
     environment:
       - server.host=0
