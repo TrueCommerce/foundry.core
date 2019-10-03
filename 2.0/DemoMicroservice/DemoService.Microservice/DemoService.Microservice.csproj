@@ -7,11 +7,15 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DocumentationFile>C:\Projects\foundry.core\DemoMicroservice\DemoService.Microservice\DemoService.Microservice.xml</DocumentationFile>
+		<DocumentationFile>bin\Debug\netcoreapp2.1\DemoService.Microservice.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DocumentationFile>bin\Release\netcoreapp2.1\DemoService.Microservice.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -17,6 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoService.Microservice", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C7A5F31D-6E6E-4144-88A6-020E2C4E9232}"
 	ProjectSection(SolutionItems) = preProject
+		add_new_entity.txt = add_new_entity.txt
 		read.me = read.me
 	EndProjectSection
 EndProject
