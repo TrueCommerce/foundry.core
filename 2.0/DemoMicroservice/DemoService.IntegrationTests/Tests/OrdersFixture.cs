@@ -39,7 +39,7 @@ namespace DemoService.IntegrationTests.Tests
 			order = await securityContext.Orders
 				.Expand(e => e.Lines)
 				.Where(e => e.CustomerName == customerName)
-				.ExecuteFirstOrDefaultAsync();
+				.FoundryExecuteFirstOrDefaultAsync();
 
 			return order;
 		}
@@ -59,7 +59,7 @@ namespace DemoService.IntegrationTests.Tests
 			var createdEntity = await DemoServiceContext.Orders
 				.Expand(e => e.Lines)
 				.Where(e => e.CustomerName == originalEntity.CustomerName)
-				.ExecuteFirstOrDefaultAsync();
+				.FoundryExecuteFirstOrDefaultAsync();
 			Assert.NotNull(createdEntity);
 			Assert.Equal(originalEntity.CustomerName, createdEntity.CustomerName);
 
@@ -71,12 +71,12 @@ namespace DemoService.IntegrationTests.Tests
 			var updatedEntity = await DemoServiceContext.Orders
 				.Expand(e => e.Lines)
 				.Where(e => e.CustomerName == newCustomerName)
-				.ExecuteFirstOrDefaultAsync();
+				.FoundryExecuteFirstOrDefaultAsync();
 			Assert.NotNull(updatedEntity);
 			Assert.Equal(newCustomerName, updatedEntity.CustomerName);
 
 			// delete entity
-			await DemoServiceContext.DeleteAsync<Order>(updatedEntity.Id);
+			await DemoServiceContext.FoundryDeleteAsync<Order>(updatedEntity.Id);
 		}
 		#endregion
 
@@ -93,7 +93,7 @@ namespace DemoService.IntegrationTests.Tests
 			var createdEntity = await DemoServiceContext.Orders
 				.Expand(e => e.Lines)
 				.Where(e => e.CustomerName == originalEntity.CustomerName)
-				.ExecuteFirstOrDefaultAsync();
+				.FoundryExecuteFirstOrDefaultAsync();
 
 			// add OrderLine to Lines collection
 			DemoServiceContext.StartTracking(createdEntity);
@@ -110,7 +110,7 @@ namespace DemoService.IntegrationTests.Tests
 			var updatedEntity = await DemoServiceContext.Orders
 				.Expand(e => e.Lines)
 				.Where(e => e.CustomerName == originalEntity.CustomerName)
-				.ExecuteFirstOrDefaultAsync();
+				.FoundryExecuteFirstOrDefaultAsync();
 			Assert.NotNull(updatedEntity);
 			Assert.NotNull(updatedEntity.Lines);
 			Assert.NotEmpty(updatedEntity.Lines);
@@ -131,7 +131,7 @@ namespace DemoService.IntegrationTests.Tests
 			updatedEntity = await DemoServiceContext.Orders
 				.Expand(e => e.Lines)
 				.Where(e => e.CustomerName == originalEntity.CustomerName)
-				.ExecuteFirstOrDefaultAsync();
+				.FoundryExecuteFirstOrDefaultAsync();
 			Assert.NotNull(updatedEntity);
 			Assert.NotNull(updatedEntity.Lines);
 			Assert.NotEmpty(updatedEntity.Lines);
@@ -146,7 +146,7 @@ namespace DemoService.IntegrationTests.Tests
 			updatedEntity = await DemoServiceContext.Orders
 				.Expand(e => e.Lines)
 				.Where(e => e.CustomerName == originalEntity.CustomerName)
-				.ExecuteFirstOrDefaultAsync();
+				.FoundryExecuteFirstOrDefaultAsync();
 			Assert.NotNull(updatedEntity);
 			Assert.NotNull(updatedEntity.Lines);
 			Assert.NotEmpty(updatedEntity.Lines);
@@ -164,14 +164,14 @@ namespace DemoService.IntegrationTests.Tests
 			updatedEntity = await DemoServiceContext.Orders
 				.Expand(e => e.Lines)
 				.Where(e => e.CustomerName == originalEntity.CustomerName)
-				.ExecuteFirstOrDefaultAsync();
+				.FoundryExecuteFirstOrDefaultAsync();
 			Assert.NotNull(updatedEntity);
 			Assert.NotNull(updatedEntity.Lines);
 			Assert.DoesNotContain(updatedEntity.Lines, e => e.LineNumber == 1);
 			Assert.DoesNotContain(updatedEntity.Lines, e => e.LineNumber == 1);
 
 			// delete entity
-			await DemoServiceContext.DeleteAsync<Order>(updatedEntity.Id);
+			await DemoServiceContext.FoundryDeleteAsync<Order>(updatedEntity.Id);
 		}
 		#endregion
 
@@ -198,7 +198,7 @@ namespace DemoService.IntegrationTests.Tests
 
 			var entity = await DemoServiceContext.Orders
 				.Where(e => e.CustomerName == customerName)
-				.ExecuteFirstOrDefaultAsync();
+				.FoundryExecuteFirstOrDefaultAsync();
 
 			Assert.NotNull(entity);
 
@@ -211,7 +211,7 @@ namespace DemoService.IntegrationTests.Tests
 			Assert.NotEmpty(data);
 			Assert.Contains(customerName, Encoding.UTF8.GetString(data), StringComparison.OrdinalIgnoreCase);
 
-			await DemoServiceContext.DeleteAsync<Order>(entity.Id);
+			await DemoServiceContext.FoundryDeleteAsync<Order>(entity.Id);
 		}
 		#endregion
 	}

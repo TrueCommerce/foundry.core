@@ -8,7 +8,6 @@ using DemoService.Core.Repositories;
 using Foundry.Core.Shared.Models;
 using Foundry.Core.Shared.SQL;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace DemoService.SQL.Repositories
 {
@@ -25,12 +24,8 @@ namespace DemoService.SQL.Repositories
 
 
 		#region Constructor
-		public OrdersRepository(
-			IConfiguration configuration,
-			DemoServiceDbContext context,
-			int apiVersion,
-			string tenantId)
-			: base(configuration, context, apiVersion, tenantId)
+		public OrdersRepository(SQLUnitOfWork<DemoServiceDbContext> sqlUnitOfWork, string tenantId)
+			: base(sqlUnitOfWork, tenantId)
 		{
 		}
 		#endregion
@@ -58,7 +53,7 @@ namespace DemoService.SQL.Repositories
 			if (exportParameters.Entities != null && exportParameters.Entities.Any())
 				entities =
 					exportParameters.Entities.Any()
-						? await Context.Orders
+						? await SQLUnitOfWork.Context.Orders
 							.Where(e => (e.TenantId == TenantId || e.TenantId == string.Empty) &&
 								exportParameters.Entities.Contains(e.Id))
 							.OrderBy(e => e.CustomerName)
@@ -66,7 +61,7 @@ namespace DemoService.SQL.Repositories
 						: new List<Order>();
 			else
 				entities =
-					await Context.Orders
+					await SQLUnitOfWork.Context.Orders
 						.Where(e => e.TenantId == TenantId || e.TenantId == string.Empty)
 						.OrderBy(e => e.CustomerName)
 						.ToListAsync();

@@ -1,0 +1,9 @@
+C:\Projects\foundry.core\2.0\DemoMicroservice\DemoService.Client\obj\Debug\netstandard2.0\DemoService.Client.csproj.CoreCompileInputs.cache
+C:\Projects\foundry.core\2.0\DemoMicroservice\DemoService.Client\obj\Debug\netstandard2.0\DemoService.Client.AssemblyInfoInputs.cache
+C:\Projects\foundry.core\2.0\DemoMicroservice\DemoService.Client\obj\Debug\netstandard2.0\DemoService.Client.AssemblyInfo.cs
+C:\Projects\foundry.core\2.0\DemoMicroservice\DemoService.Client\bin\Debug\netstandard2.0\DemoService.Client.deps.json
+C:\Projects\foundry.core\2.0\DemoMicroservice\DemoService.Client\bin\Debug\netstandard2.0\DemoService.Client.dll
+C:\Projects\foundry.core\2.0\DemoMicroservice\DemoService.Client\bin\Debug\netstandard2.0\DemoService.Client.pdb
+C:\Projects\foundry.core\2.0\DemoMicroservice\DemoService.Client\obj\Debug\netstandard2.0\DemoService.Client.dll
+C:\Projects\foundry.core\2.0\DemoMicroservice\DemoService.Client\obj\Debug\netstandard2.0\DemoService.Client.pdb
+C:\Projects\foundry.core\2.0\DemoMicroservice\DemoService.Client\obj\Debug\netstandard2.0\DemoService.Client.csprojAssemblyReference.cache

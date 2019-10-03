@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace DemoService.Microservice
 {
@@ -11,14 +13,25 @@ namespace DemoService.Microservice
 		/// <param name="args">arguments</param>
 		public static void Main(string[] args)
 		{
-			CreateWebHostBuilder(args).Build().Run();
+			BuildWebHost(args).Build().Run();
 		}
 
 		/// <summary>Build web host</summary>
 		/// <param name="args">Arguments</param>
 		/// <returns>Web host instance</returns>
-		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+		public static IWebHostBuilder BuildWebHost(string[] args) =>
 			WebHost.CreateDefaultBuilder(args)
+				.ConfigureAppConfiguration((hostingContext, config) =>
+				{
+					config.AddJsonFile("appsettings.local.json", true, true); //load local settings
+				})
+				.ConfigureLogging((hostingContext, logging) =>
+				{
+					logging.ClearProviders();
+					logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+					logging.AddConsole();
+					logging.AddDebug();
+				})
 				.UseStartup<Startup>();
 	}
 }

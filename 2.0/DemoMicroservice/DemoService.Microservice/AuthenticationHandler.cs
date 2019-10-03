@@ -8,7 +8,6 @@ using Foundry.Core.Security.Client.OData.Context;
 using Foundry.Core.Shared;
 using Foundry.Core.Shared.Security;
 using Foundry.Core.Shared.Services.OData;
-using Foundry.Core.Shared.Services.Security;
 using Foundry.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -32,7 +31,8 @@ namespace DemoService.Microservice
 		public AuthenticationHandler(RequestDelegate next, IConfiguration configuration)
 		{
 			_next = next;
-			_coreSecurityRoot = new Uri(configuration.GetCachedValue("CoreSecurityRootUri", string.Empty));
+			_coreSecurityRoot =
+				new Uri(configuration.GetCachedValue(Foundry.Core.Security.ConfigurationKeys.RootUrl, string.Empty));
 		}
 		#endregion
 

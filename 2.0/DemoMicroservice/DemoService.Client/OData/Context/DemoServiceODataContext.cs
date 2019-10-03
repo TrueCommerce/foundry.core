@@ -7,9 +7,12 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Foundry.Core.Shared.Security;
+using Foundry.Shared.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData;
 using Microsoft.OData.Client;
@@ -20,25 +23,92 @@ namespace DemoService.Client.OData.Context
 	public partial class DemoServiceODataContext
 	{
 		#region Properties
-		/// <summary>Authentication ticket</summary>
-		/// <remarks>For backward compatibility only</remarks>
-		public string AuthenticationTicket { get; set; }
-
 		/// <summary>JSon Web Token</summary>
 		public string Token { get; set; }
+
+		/// <summary>Certificate Key</summary>
+		private string CertificateKey { get; set; }
+
+		/// <summary>Additional HTTP headers</summary>
+		// ReSharper disable once CollectionNeverUpdated.Global
+		public Dictionary<string, string> AdditionalHeaders { get; } = new Dictionary<string, string>();
 		#endregion
 
 
-		#region Constructors
-		public DemoServiceODataContext(Uri serviceRoot, string jwtSecret, string userName, string tenantId)
-			: this(serviceRoot)
+		#region private static ToServiceUri
+		private static Uri ToServiceUri(Uri serviceRoot)
 		{
+			return new Uri(serviceRoot.AbsoluteUri + "api/v1");
+		}
+		#endregion
+
+		#region private static ParseCertificateKey
+		private static (Guid CertificateId, string PrivateKey) ParseCertificateKey(string certificateKey)
+		{
+			if (certificateKey == null)
+				throw new ArgumentNullException(nameof(certificateKey));
+
+			string[] parts = certificateKey.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (parts.Length != 2)
+				throw new ArgumentException($"{certificateKey} - invalid format", nameof(certificateKey));
+
+			if (!Guid.TryParse(parts[0], out var id))
+				throw new ArgumentException($"{certificateKey} - invalid format, cannot detect certificate id", nameof(certificateKey));
+
+			return (id, parts[1]);
+		}
+		#endregion
+
+
+		#region public static Create
+		public static DemoServiceODataContext Create(Uri serviceRoot)
+		{
+			return new DemoServiceODataContext(ToServiceUri(serviceRoot));
+		}
+		#endregion
+
+		#region public static CreateWithCertificate
+		public static DemoServiceODataContext CreateWithCertificate(Uri serviceRoot, string certificateKey)
+		{
+			return
+				new DemoServiceODataContext(ToServiceUri(serviceRoot))
+				{
+					CertificateKey = certificateKey
+				};
+		}
+		#endregion
+
+		#region public static CreateWithJwt
+		public static DemoServiceODataContext CreateWithJwt(Uri serviceRoot, string jwt)
+		{
+			return
+				new DemoServiceODataContext(ToServiceUri(serviceRoot))
+				{
+					Token = jwt
+				};
+		}
+		#endregion
+
+		#region public static CreateWithJwtSecret
+		public static DemoServiceODataContext CreateWithJwtSecret(
+			Uri serviceRoot,
+			string jwtSecret,
+			string userName,
+			string tenantId,
+			string impersonatedTenantId = null)
+		{
+			DemoServiceODataContext context = new DemoServiceODataContext(ToServiceUri(serviceRoot));
+
 			ClaimsIdentity claimsIdentity = new ClaimsIdentity(
 				new[]
 				{
 					new Claim(ClaimTypes.Name, userName),
-					new Claim("TenantId", tenantId)
+					new Claim(SystemDefaults.JwtClaimTypeTenantId, tenantId)
 				});
+
+			if (impersonatedTenantId != null)
+				claimsIdentity.AddClaim(new Claim(SystemDefaults.JwtClaimTypeImpersonatedTenantId, impersonatedTenantId));
 
 			var symmetricKey = Convert.FromBase64String(jwtSecret);
 			var tokenDescriptor = new SecurityTokenDescriptor
@@ -51,7 +121,37 @@ namespace DemoService.Client.OData.Context
 			};
 			var tokenHandler = new JwtSecurityTokenHandler();
 			var stoken = tokenHandler.CreateToken(tokenDescriptor);
-			Token = tokenHandler.WriteToken(stoken);
+			context.Token = tokenHandler.WriteToken(stoken);
+
+			return context;
+		}
+		#endregion
+
+
+		#region public static GenerateTokenByCertificateKey
+		public static string GenerateTokenByCertificateKey(string certificateKey)
+		{
+			var (certificateId, privateKey) = ParseCertificateKey(certificateKey);
+
+			var cryptoServiceProvider = RSA.Create();
+			cryptoServiceProvider.FromXmlStringTemp(privateKey);
+
+			var tokenDescriptor = new SecurityTokenDescriptor
+			{
+				Subject = new ClaimsIdentity(),
+				Expires = DateTime.UtcNow.Add(TimeSpan.FromMinutes(5)),
+				SigningCredentials = new SigningCredentials(
+					new RsaSecurityKey(cryptoServiceProvider)
+					{
+						KeyId = SystemDefaults.JwtCertificateKidPrefix + certificateId
+					},
+					SecurityAlgorithms.RsaSha256Signature,
+					SecurityAlgorithms.Sha256Digest)
+			};
+			var tokenHandler = new JwtSecurityTokenHandler();
+			var stoken = tokenHandler.CreateToken(tokenDescriptor);
+
+			return tokenHandler.WriteToken(stoken);
 		}
 		#endregion
 
@@ -80,6 +180,9 @@ namespace DemoService.Client.OData.Context
 			message.HttpWebRequest.PreAuthenticate = true;
 
 			AddAuthenticationHeaders(message);
+
+			foreach (KeyValuePair<string, string> header in AdditionalHeaders)
+				message.SetHeader(header.Key, header.Value);
 		}
 		#endregion
 
@@ -106,11 +209,10 @@ namespace DemoService.Client.OData.Context
 			if (request == null)
 				throw new ArgumentNullException(nameof(request));
 
-			if (!string.IsNullOrEmpty(AuthenticationTicket))
-				request.Headers["AuthenticationTicket"] = AuthenticationTicket;
-
 			if (!string.IsNullOrEmpty(Token))
 				request.Headers["Authorization"] = "Bearer " + Token;
+			else if (CertificateKey != null)
+				request.Headers["Authorization"] = "Bearer " + GenerateTokenByCertificateKey(CertificateKey);
 
 			return request;
 		}
@@ -120,11 +222,12 @@ namespace DemoService.Client.OData.Context
 			if (message == null)
 				throw new ArgumentNullException(nameof(message));
 
-			if (!string.IsNullOrEmpty(AuthenticationTicket))
-				message.Headers.Add("AuthenticationTicket", AuthenticationTicket);
-
 			if (!string.IsNullOrEmpty(Token))
 				message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+			else if (CertificateKey != null)
+				message.Headers.Authorization = new AuthenticationHeaderValue(
+					"Bearer ",
+					GenerateTokenByCertificateKey(CertificateKey));
 
 			return message;
 		}
@@ -134,11 +237,10 @@ namespace DemoService.Client.OData.Context
 			if (message == null)
 				throw new ArgumentNullException(nameof(message));
 
-			if (!string.IsNullOrEmpty(AuthenticationTicket))
-				message.SetHeader("AuthenticationTicket", AuthenticationTicket);
-
 			if (!string.IsNullOrEmpty(Token))
 				message.SetHeader("Authorization", "Bearer " + Token);
+			else if (CertificateKey != null)
+				message.SetHeader("Authorization", "Bearer " + GenerateTokenByCertificateKey(CertificateKey));
 
 			return message;
 		}

@@ -15,7 +15,7 @@ namespace DemoService.SQL
 				.ForMember(e => e.UserCreated, opt => opt.Ignore())
 				.ForMember(e => e.DateModified, opt => opt.Ignore())
 				.ForMember(e => e.UserModified, opt => opt.Ignore())
-				.AfterMap((from, to) =>
+				.AfterMap((from, to, context) =>
 				{
 					if (from.Lines == null)
 						return;
@@ -35,10 +35,10 @@ namespace DemoService.SQL
 						to.Lines.Remove(f);
 
 					// add new
-					var added = @from.Lines.Where(eModel =>
+					var added = from.Lines.Where(eModel =>
 							to.Lines.All(eEntity =>
 								eEntity.LineNumber != eModel.LineNumber))
-						.Select(Mapper.Map<OrderLine, OrderLine>)
+						.Select(context.Mapper.Map<OrderLine, OrderLine>)
 						.ToList();
 					foreach (var f in added)
 						to.Lines.Add(f);

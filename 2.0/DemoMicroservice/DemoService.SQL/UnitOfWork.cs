@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using DemoService.Core.Repositories;
 using DemoService.SQL.Repositories;
 using Foundry.Core.Shared;
 using Foundry.Core.Shared.Models;
+using Foundry.Core.Shared.SQL;
 using Microsoft.Extensions.Configuration;
 
 namespace DemoService.SQL
@@ -13,25 +15,33 @@ namespace DemoService.SQL
 		#region Properties
 		private readonly IConfiguration _configuration;
 		private readonly DemoServiceDbContext _context;
+		private readonly IMapper _mapper;
 
-		private static readonly Dictionary<Type, Func<IConfiguration, DemoServiceDbContext, int, string, object>>
+		public string AuthorizedUserEmail
+		{
+			get => _context.AuthorizedUserEmail;
+			set => _context.AuthorizedUserEmail = value;
+		}
+
+		private static readonly Dictionary<Type, Func<SQLUnitOfWork<DemoServiceDbContext>, string, object>>
 			_repositories =
-				new Dictionary<Type, Func<IConfiguration, DemoServiceDbContext, int, string, object>>
+				new Dictionary<Type, Func<SQLUnitOfWork<DemoServiceDbContext>, string, object>>
 				{
 					{
 						typeof(IOrdersRepository),
-						(configuration, context, apiVersion, tenantId) =>
-							new OrdersRepository(configuration, context, apiVersion, tenantId)
+						(sqlUnitOfWork, tenantId) =>
+							new OrdersRepository(sqlUnitOfWork, tenantId)
 					}
 				};
 		#endregion
 
 
 		#region Constructor
-		public UnitOfWork(IConfiguration configuration, DemoServiceDbContext context)
+		public UnitOfWork(IConfiguration configuration, DemoServiceDbContext context, IMapper mapper)
 		{
 			_configuration = configuration;
 			_context = context;
+			_mapper = mapper;
 		}
 		#endregion
 
@@ -47,7 +57,9 @@ namespace DemoService.SQL
 				throw new NotSupportedException($"Cannot find repository factory for {typeof(TEntity).FullName}");
 
 			// tODO: Find a way to eliminate type conversion
-			return (TEntityRepository)factory(_configuration, _context, apiVersion, tenantId);
+			return (TEntityRepository)factory(
+				new SQLUnitOfWork<DemoServiceDbContext>(_configuration, _mapper, _context, apiVersion),
+				tenantId);
 		}
 		#endregion
 	}

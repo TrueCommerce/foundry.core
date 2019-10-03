@@ -7,7 +7,9 @@ namespace DemoService.IntegrationTests
 	{
 		#region Properties
 		public static string DemoServiceUri { get; }
+		public static string JwtSecret { get; }
 		#endregion
+
 
 		#region Constructor
 		static TestsConfiguration()
@@ -20,6 +22,7 @@ namespace DemoService.IntegrationTests
 			var configuration = builder.Build();
 
 			DemoServiceUri = configuration["DemoServiceUri"];
+			JwtSecret = configuration["JwtSecret"];
 		}
 		#endregion
 	}

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using AutoMapper;
 using DemoService.Core.Models;
@@ -48,12 +49,12 @@ namespace DemoService.Microservice.Controllers
 		[ODataCustomAction(AcceptsStream = true)]
 		public async Task<IActionResult> Import([FromODataUri] string kind, [FromODataUri] bool overwriteExisting)
 		{
-			//if (!IsUserAdministrator)
-			//	return new StatusCodeResult((int)HttpStatusCode.Forbidden);
+			if (!IsUserAdministrator)
+				throw new AuthenticationException();
 
 			#region read data
 			if (HttpContext.Request.Form?.Files.Count != 1)
-				return BadRequest("No binary data passed");
+				throw new ValidationException("No binary data passed");
 
 			byte[] data;
 
@@ -78,7 +79,7 @@ namespace DemoService.Microservice.Controllers
 					break;
 
 				default:
-					return BadRequest("kind is not recognized");
+					throw new ValidationException("kind is not recognized");
 			}
 			#endregion
 
@@ -101,7 +102,7 @@ namespace DemoService.Microservice.Controllers
 		public async Task<IActionResult> Export(ODataActionParameters parameters)
 		{
 			if (!IsUserAdministrator)
-				return new StatusCodeResult((int)HttpStatusCode.Forbidden);
+				throw new AuthenticationException();
 
 			#region Read parameters
 			IEnumerable<Guid> ids = null;
@@ -134,7 +135,7 @@ namespace DemoService.Microservice.Controllers
 			#endregion
 
 			if (string.IsNullOrEmpty(kind))
-				return BadRequest("kind is not specified");
+				throw new ValidationException("kind is not specified");
 
 			byte[] data;
 
@@ -151,7 +152,7 @@ namespace DemoService.Microservice.Controllers
 					break;
 
 				default:
-					return BadRequest("kind is not recognized");
+					throw new ValidationException("kind is not recognized");
 			}
 			#endregion
 

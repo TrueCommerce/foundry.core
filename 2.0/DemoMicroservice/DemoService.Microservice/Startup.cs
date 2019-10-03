@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Reflection;
 using AutoMapper;
 using DemoService.Core;
@@ -14,21 +15,24 @@ using Foundry.Core.Shared.Security;
 using Foundry.Core.Shared.Services.Exceptions;
 using Foundry.Core.Shared.Services.OData;
 using Foundry.Core.Shared.Services.OData.Help;
+using Foundry.Shared;
 using Foundry.Shared.Crypt;
 using Microsoft.AspNet.OData.Extensions;
-using Microsoft.AspNet.OData.Formatter;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
-using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using AuthenticationTicket = Accellos.Platform.Security.Authentication.AuthenticationTicket;
 
 namespace DemoService.Microservice
@@ -61,15 +65,14 @@ namespace DemoService.Microservice
 		// ReSharper disable once UnusedMember.Global
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddScoped<IUnitOfWork, UnitOfWork>();
+			services.AddScoped<IUnitOfWork, UnitOfWork>(); services
+				.AddHealthChecks()
+				.AddCheck<HealthCheck>("Microservice")
+				.AddDbContextCheck<DemoServiceDbContext>("security db context");
 
-			services.AddAutoMapper(delegate (IMapperConfigurationExpression e)
-			{
-				//e.AddProfile<SQL.Mapping.MappingProfile>();
-				e.CreateMissingTypeMaps = false;
-			});
+			services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
-			DemoServiceDbContext.ConnectionString = Configuration[ConfigurationKeys.SQLConnection];
+			DemoServiceDbContext.ConnectionString = Configuration[ConfigurationKeys.SqlConnection];
 
 			services.AddDbContext<DemoServiceDbContext>(optionsBuilder => optionsBuilder
 				.UseLazyLoadingProxies()
@@ -77,31 +80,11 @@ namespace DemoService.Microservice
 					DemoServiceDbContext.ConnectionString,
 					x => x.MigrationsHistoryTable(DemoServiceDbContext.SchemaTableName)));
 
-			//services.AddCors();
+			services.AddCors();
 
-			services.AddMvc(options =>
-			{
-				//loop on each OData formatter to find the one without a supported media type
-				foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>()
-					.Where(_ => _.SupportedMediaTypes.Count == 0))
-				{
-					// to comply with the media type specifications, I'm using the prs prefix, for personal usage
-					outputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
-				}
-
-				foreach (var inputFormatter in options.InputFormatters.OfType<ODataInputFormatter>()
-					.Where(_ => _.SupportedMediaTypes.Count == 0))
-				{
-					// to comply with the media type specifications, I'm using the prs prefix, for personal usage
-					inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
-				}
-			}).AddJsonOptions(opt =>
-			{
-				//				opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.None;
-				opt.SerializerSettings.ContractResolver = new DefaultContractResolver();
-			})
-				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+			services.AddMvc(options => { options.EnableEndpointRouting = false; })
+				.AddJsonOptions(opt => { opt.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
+				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 			services.AddOData();
 
@@ -183,10 +166,44 @@ namespace DemoService.Microservice
 		/// <summary>Configure container</summary>
 		/// <param name="app">Application builder</param>
 		/// <param name="env">Hosting environment</param>
+		/// <param name="autoMapper">AutoMapper configuration provider</param>
+		/// <param name="loggerFactory">Logger factory</param>
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		// ReSharper disable once UnusedMember.Global
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		public void Configure(
+			IApplicationBuilder app,
+			IHostingEnvironment env,
+			AutoMapper.IConfigurationProvider autoMapper,
+			ILoggerFactory loggerFactory)
 		{
+			ILogger logger = loggerFactory.CreateLogger("Demo Microservice startup");
+
+			#region add health check endpoint
+			app.UseHealthChecks("/healthcheck",
+				new HealthCheckOptions
+				{
+					ResponseWriter = async (context, report) =>
+					{
+						var result = JsonConvert.SerializeObject(
+							new
+							{
+								status = report.Status.ToString(),
+								checks = report.Entries.Select(e =>
+									new
+									{
+										check = e.Key,
+										result = e.Value.Status.ToString(),
+										data = e.Value.Data.Select(d => new { d.Key, d.Value })
+									})
+							});
+						context.Response.ContentType = MediaTypeNames.Application.Json;
+						await context.Response.WriteAsync(result);
+					}
+				});
+			#endregion
+
+			autoMapper.AssertConfigurationIsValid();
+
 			app.UseForwardedHeaders(new ForwardedHeadersOptions
 			{
 				ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -199,20 +216,33 @@ namespace DemoService.Microservice
 
 				context.Database.Migrate();
 				context.CheckBasicIntegrity(Configuration).Wait();
+				logger.LogInformation("Checked DB integrity");
 			}
+
+			//EventsBroker.Initialize(loggerFactory);
 
 			if (env.IsDevelopment())
 				app.UseDeveloperExceptionPage();
 
-			//app.UseCors(e =>
-			//{
-			//	e.AllowAnyOrigin();
-			//	e.AllowAnyHeader();
-			//	e.AllowAnyMethod();
-			//	e.AllowCredentials();
-			//	e.Build();
-			//});
+			#region configure CORS
+			var allowedOrigins = Configuration
+					.GetCachedValue(ConfigurationKeys.CorsOriginAllowed, null)?
+					.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList()
+				?? new List<string>();
 
+			app.UseCors(e =>
+			{
+				e.SetIsOriginAllowed(s =>
+					!allowedOrigins.Any() || allowedOrigins.Contains(s, StringComparer.OrdinalIgnoreCase));
+				//e.AllowAnyOrigin();
+				e.AllowAnyHeader();
+				e.AllowAnyMethod();
+				e.AllowCredentials();
+				e.Build();
+			});
+			#endregion
+
+			#region configure Swagger
 			// Enable middleware to serve generated Swagger as a JSON endpoint.
 			app.UseSwagger();
 
@@ -226,9 +256,13 @@ namespace DemoService.Microservice
 				c.EnableFilter();
 			});
 
+			logger.LogDebug("Configured Swagger");
+			#endregion
+
 			app.UseMiddleware<ErrorHandlingMiddleware>();
 			app.UseMiddleware<AuthenticationHandler>();
 
+			#region configure OData
 			app.UseMvc(routeBuilder =>
 			{
 				routeBuilder.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
@@ -260,6 +294,11 @@ namespace DemoService.Microservice
 
 				routeBuilder.EnableDependencyInjection();
 			});
+
+			logger.LogDebug("Configured MVC / OData");
+			#endregion
+
+			logger.LogInformation("Finished configuring microservice");
 		}
 		#endregion
 	}

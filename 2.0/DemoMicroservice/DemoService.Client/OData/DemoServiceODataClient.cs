@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generation date: 2018-10-15 9:13:36 AM
+// Generation date: 2019-10-02 8:47:41 PM
 namespace DemoService.Client.OData.Models
 {
     /// <summary>
@@ -314,10 +314,10 @@ namespace DemoService.Client.OData.Models
     /// There are no comments for OrderLine in the schema.
     /// </summary>
     /// <KeyProperties>
-    /// OrderId
     /// LineNumber
+    /// OrderId
     /// </KeyProperties>
-    [global::Microsoft.OData.Client.Key("OrderId", "LineNumber")]
+    [global::Microsoft.OData.Client.Key("LineNumber", "OrderId")]
     [global::Microsoft.OData.Client.OriginalNameAttribute("OrderLine")]
     public partial class OrderLine : global::Microsoft.OData.Client.BaseEntityType, global::System.ComponentModel.INotifyPropertyChanged
     {
@@ -489,16 +489,16 @@ namespace DemoService.Client.OData.Models
         /// Get an entity of type global::DemoService.Client.OData.Models.OrderLine as global::DemoService.Client.OData.Models.OrderLineSingle specified by key from an entity set
         /// </summary>
         /// <param name="source">source entity set</param>
-        /// <param name="orderId">The value of orderId</param>
         /// <param name="lineNumber">The value of lineNumber</param>
+        /// <param name="orderId">The value of orderId</param>
         public static global::DemoService.Client.OData.Models.OrderLineSingle ByKey(this global::Microsoft.OData.Client.DataServiceQuery<global::DemoService.Client.OData.Models.OrderLine> source,
-            global::System.Guid orderId, 
-            int lineNumber)
+            int lineNumber, 
+            global::System.Guid orderId)
         {
             global::System.Collections.Generic.Dictionary<string, object> keys = new global::System.Collections.Generic.Dictionary<string, object>
             {
-                { "OrderId", orderId }, 
-                { "LineNumber", lineNumber }
+                { "LineNumber", lineNumber }, 
+                { "OrderId", orderId }
             };
             return new global::DemoService.Client.OData.Models.OrderLineSingle(source.Context, source.GetKeyPath(global::Microsoft.OData.Client.Serializer.GetKeyString(source.Context, keys)));
         }
@@ -664,6 +664,99 @@ namespace DemoService.Client.OData.Shared.Models
         private string _Value;
         partial void OnValueChanging(string value);
         partial void OnValueChanged();
+        /// <summary>
+        /// This event is raised when the value of the property is changed
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "7.5.1")]
+        public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// The value of the property is changed
+        /// </summary>
+        /// <param name="property">property name</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "7.5.1")]
+        protected virtual void OnPropertyChanged(string property)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new global::System.ComponentModel.PropertyChangedEventArgs(property));
+            }
+        }
+    }
+    /// <summary>
+    /// There are no comments for LocalizableError in the schema.
+    /// </summary>
+    [global::Microsoft.OData.Client.OriginalNameAttribute("LocalizableError")]
+    public partial class LocalizableError : global::System.ComponentModel.INotifyPropertyChanged
+    {
+        /// <summary>
+        /// There are no comments for Property ErrorId in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "7.5.1")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("ErrorId")]
+        public string ErrorId
+        {
+            get
+            {
+                return this._ErrorId;
+            }
+            set
+            {
+                this.OnErrorIdChanging(value);
+                this._ErrorId = value;
+                this.OnErrorIdChanged();
+                this.OnPropertyChanged("ErrorId");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "7.5.1")]
+        private string _ErrorId;
+        partial void OnErrorIdChanging(string value);
+        partial void OnErrorIdChanged();
+        /// <summary>
+        /// There are no comments for Property ErrorMessage in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "7.5.1")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("ErrorMessage")]
+        public string ErrorMessage
+        {
+            get
+            {
+                return this._ErrorMessage;
+            }
+            set
+            {
+                this.OnErrorMessageChanging(value);
+                this._ErrorMessage = value;
+                this.OnErrorMessageChanged();
+                this.OnPropertyChanged("ErrorMessage");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "7.5.1")]
+        private string _ErrorMessage;
+        partial void OnErrorMessageChanging(string value);
+        partial void OnErrorMessageChanged();
+        /// <summary>
+        /// There are no comments for Property Parameters in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "7.5.1")]
+        [global::Microsoft.OData.Client.OriginalNameAttribute("Parameters")]
+        public global::System.Collections.ObjectModel.ObservableCollection<string> Parameters
+        {
+            get
+            {
+                return this._Parameters;
+            }
+            set
+            {
+                this.OnParametersChanging(value);
+                this._Parameters = value;
+                this.OnParametersChanged();
+                this.OnPropertyChanged("Parameters");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.OData.Client.Design.T4", "7.5.1")]
+        private global::System.Collections.ObjectModel.ObservableCollection<string> _Parameters = new global::System.Collections.ObjectModel.ObservableCollection<string>();
+        partial void OnParametersChanging(global::System.Collections.ObjectModel.ObservableCollection<string> value);
+        partial void OnParametersChanged();
         /// <summary>
         /// This event is raised when the value of the property is changed
         /// </summary>
@@ -1100,8 +1193,8 @@ namespace DemoService.Client.OData.Context
       </EntityType>
       <EntityType Name=""OrderLine"">
         <Key>
-          <PropertyRef Name=""OrderId"" />
           <PropertyRef Name=""LineNumber"" />
+          <PropertyRef Name=""OrderId"" />
         </Key>
         <Property Name=""OrderId"" Type=""Edm.Guid"" Nullable=""false"" />
         <Property Name=""LineNumber"" Type=""Edm.Int32"" Nullable=""false"" />
@@ -1119,6 +1212,11 @@ namespace DemoService.Client.OData.Context
         <Property Name=""Key"" Type=""Edm.String"" Nullable=""false"" />
         <Property Name=""Value"" Type=""Edm.String"" Nullable=""false"" />
       </ComplexType>
+      <ComplexType Name=""LocalizableError"">
+        <Property Name=""ErrorId"" Type=""Edm.String"" />
+        <Property Name=""ErrorMessage"" Type=""Edm.String"" />
+        <Property Name=""Parameters"" Type=""Collection(Edm.String)"" />
+      </ComplexType>
       <EntityType Name=""TenantAction"">
         <Key>
           <PropertyRef Name=""Id"" />
@@ -1133,13 +1231,13 @@ namespace DemoService.Client.OData.Context
     </Schema>
     <Schema Namespace=""Default"" xmlns=""http://docs.oasis-open.org/odata/ns/edm"">
       <Action Name=""Import"">
-        <Parameter Name=""kind"" Type=""Edm.String"" Unicode=""false"" />
+        <Parameter Name=""kind"" Type=""Edm.String"" />
         <Parameter Name=""overwriteExisting"" Type=""Edm.Boolean"" Nullable=""false"" />
       </Action>
       <Action Name=""Export"">
-        <Parameter Name=""kind"" Type=""Edm.String"" Unicode=""false"" />
-        <Parameter Name=""additionalId"" Type=""Edm.String"" Unicode=""false"" />
-        <Parameter Name=""productId"" Type=""Edm.String"" Unicode=""false"" />
+        <Parameter Name=""kind"" Type=""Edm.String"" />
+        <Parameter Name=""additionalId"" Type=""Edm.String"" />
+        <Parameter Name=""productId"" Type=""Edm.String"" />
         <Parameter Name=""ids"" Type=""Collection(Edm.Guid)"" Nullable=""false"" />
         <ReturnType Type=""Edm.Stream"" Nullable=""false"" />
       </Action>

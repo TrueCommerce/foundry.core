@@ -1,5 +1,6 @@
 ﻿using DemoService.Client.OData.Context;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace DemoService.IntegrationTests
 {
@@ -25,6 +26,8 @@ namespace DemoService.IntegrationTests
 			}
 		}
 		#endregion
+
+		public ITestOutputHelper Output { get; }
 		#endregion
 
 
@@ -32,6 +35,12 @@ namespace DemoService.IntegrationTests
 		public TestsBase(DemoServiceContextFixture fixture)
 		{
 			Fixture = fixture;
+		}
+
+		public TestsBase(DemoServiceContextFixture fixture, ITestOutputHelper output)
+		{
+			Fixture = fixture;
+			Output = output;
 		}
 		#endregion
 	}

@@ -1,68 +1,44 @@
---- Swagger playground ---
-http://localhost:8192/swagger
+--- Features ---
+- Fully functional Order/OrderLine CRUD + Import/Export demo
+- Containerized Microservice, IOC design
+- ASP.NET Core / .Net Standard
+- BackEnd: Entity Framework Core / SQL server
+- EndPoints: ASP.Net Core OData
+- Swagger Playground UI: http://localhost:8192/swagger
+- HealthCheck support: http://localhost:8192/healthcheck
+- Authentication / Authorization : pass-through using Foundry Core Security Microservice
+  supports: JWT, Certificate based Authentication
+  OData controllers: AuthorizedUser property
+- Containerization: Docker: Debug, Production, HealthCheck
+- uses Foundry SDK through referencing public NuGet packages from: https://www.nuget.org/packages?q=truecommerce
 
 
-1. Add new core entity type ----------
-
-DemoService.Core
-/Models - add entity and filters classes
-/Repositories - add repository interface
-/Services - add manager
-
-DemoService.SQL
-/Configurations - add table configuration
-MappingProfile.cs - add mapping from TEnriry to TEntity ignoring UserCreated and DateCreated properties
-SecurityDbContext.cs - add entity DbSet
-/Repositories - add entity repository
-UnitOfWork - add repository registration
-
-DemoService.Microservice
-/Controllers - add DTO controller
-/Controllers/TenantActionsController.cs - add import / export if need
+--- TODO ---
+- add VS Code docker build / unit tests targets support
+- move AuthenticationHandler and some ASP.NET initialization to Foundry SDK
+- move some unit tests generic code to Foundry SDK
+- add Foundry.Core.Logs.Gateway support for logging
 
 
-2. Recompile the whole solution ----------
+
+--- Prerequisites ---
+- VS 2017/19 or VS Code
+- SQL server DB
+- .Net Core 2.2 SDK
 
 
-3. add migration and update developer db ----------
+--- Configuration ---
+DemoService.Microservice -> appsettings.json
+SqlConnection - SQL connection string to empty demo database
+Foundry:Security:RootUrl - Foundry Security Microservice Url Base
 
--- start powershell and go to SQL project folder
-cd C:\Projects\foundry.core\DemoMicroservice\DemoService.SQL\
-
--- add migration to the project ... it will register migration to create db table for the new entity
-dotnet ef migrations add [comment_no_spaces]
-
--- update dev database (connection string is in MigrationsDbContextFactory.cs/SQLConnection)
-dotnet ef database update
+DemoService.IntegrationTests -> appsettings.json
+JwtSecret - there development JwtSecret by default, but if using Core Microservices installed in docker,
+need to set the same secret as the one used for installing Core Security Microservice.
 
 
-4. Recompile the whole solution ----------
-
-
-5. Start DemoService.Microservice ----------
-
-
-6. Generate clients ---
-
-regenerate T4 OData v4 clients:
-DemoService.Client.NetCore\OData\DemoServiceODataContext.tt
-DemoService.Client.Net4\OData\DemoServiceODataContext.tt
-
-DemoService.Client.NetCore
-OData/Models/ModelsDefinitions.cs
-- add partial model implementing IClientProxyModel
-
-
-7. xUnit Tests ----------
-
-DemoService.IntegrationTests
-\Tests - add xunit tests
-DemoServiceContextFixture.cs - add to DeleteTestData method
-
---Recompile unit tests
-
--- start xunit tests
-cd C:\Projects\foundry.core\DemoMicroservice\DemoService.IntegrationTests
+--- start xunit tests ---
+cd C:\Projects\foundry.core\2.0\DemoMicroservice\DemoService.IntegrationTests
 dotnet test
 -- or
 dotnet test -l "trx;LogFileName=testresults.trx"
