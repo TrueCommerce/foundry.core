@@ -105,7 +105,7 @@ namespace UseCasesPlayground.Cases
 			securityContext = CoreSecurityODataContext.CreateWithJwt(securityServiceRoot, jwt);
 			var user = await securityContext.Users
 				.Where(e => e.TenantId == string.Empty && e.SystemUserId == SystemDefaults.TenantAdministratorUserId)
-				.ExecuteFirstOrDefaultAsync();
+				.FoundryExecuteFirstOrDefaultAsync();
 
 			// store cert key at the safe place on worker (3rd party service) (in docker can be passed as environment parameters to the container)
 			// note: can use SystemDefaults.SystemAdministratorUserId as userId if just need to bind certificate to "sa" ... but usually it is not a good idea
