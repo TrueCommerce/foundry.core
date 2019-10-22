@@ -31,9 +31,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Serilog;
+using Serilog.Events;
+using Serilog.Exceptions;
+using Serilog.Sinks.Elasticsearch;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using AuthenticationTicket = Accellos.Platform.Security.Authentication.AuthenticationTicket;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace DemoService.Microservice
 {
@@ -41,6 +46,23 @@ namespace DemoService.Microservice
 	// ReSharper disable once ClassNeverInstantiated.Global
 	public class Startup
 	{
+		#region private sealed class IndexDeciderToken
+		// ReSharper disable once ClassNeverInstantiated.Local
+		private sealed class IndexDeciderToken
+		{
+#pragma warning disable IDE1006 // Naming Styles
+			// ReSharper disable once UnusedAutoPropertyAccessor.Local
+			// ReSharper disable once InconsistentNaming
+			public string contextPrefix { get; set; }
+
+			// ReSharper disable once UnusedAutoPropertyAccessor.Local
+			// ReSharper disable once InconsistentNaming
+			public string indexFormat { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
+		}
+		#endregion
+
+
 		#region Properties
 		/// <summary>Container configuration</summary>
 		// ReSharper disable once MemberCanBePrivate.Global
@@ -54,6 +76,67 @@ namespace DemoService.Microservice
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
+
+			var section = configuration.GetSection("Logging:Elasticsearch:indexFormats");
+			List<IndexDeciderToken> indexDeciderTokens = null;
+
+			if (section != null)
+				indexDeciderTokens = section.Get<List<IndexDeciderToken>>();
+
+			IndexDeciderToken defaulIndexDeciderToken =
+				indexDeciderTokens?.FirstOrDefault(e => string.IsNullOrEmpty(e.contextPrefix));
+
+			string defaultIndexFormat = string.IsNullOrEmpty(defaulIndexDeciderToken?.indexFormat)
+				? "demo-microservices-unknown-{0:yyyy.MM.dd}"
+				: defaulIndexDeciderToken.indexFormat;
+
+			if (defaulIndexDeciderToken != null)
+				indexDeciderTokens.Remove(defaulIndexDeciderToken);
+
+			Dictionary<string, bool> indexFormatWithTenant = new Dictionary<string, bool>();
+
+			if (indexDeciderTokens != null)
+				foreach (var token in indexDeciderTokens)
+					indexFormatWithTenant[token.indexFormat] = token.indexFormat.Contains("{1}");
+
+			Log.Logger = new LoggerConfiguration()
+				.Enrich.FromLogContext()
+				.Enrich.WithExceptionDetails()
+				.WriteTo.Elasticsearch(
+					new ElasticsearchSinkOptions(new Uri(configuration["Logging:Elasticsearch:nodeUris"]))
+					{
+						AutoRegisterTemplate = true,
+						FailureCallback = e => Console.WriteLine("Unable to submit event " + e.MessageTemplate),
+						IndexDecider = delegate (LogEvent @event, DateTimeOffset offset)
+						{
+							if (!@event.Properties.TryGetValue("SourceContext", out var sourceContextValue))
+								return string.Format(defaultIndexFormat, offset);
+
+							if (!((sourceContextValue as ScalarValue)?.Value is string sourceContext) ||
+								indexDeciderTokens == null)
+								return string.Format(defaultIndexFormat, offset);
+
+							foreach (var token in indexDeciderTokens)
+								if (sourceContext.StartsWith(token.contextPrefix, StringComparison.Ordinal))
+								{
+									if (!indexFormatWithTenant.TryGetValue(token.indexFormat, out bool isTenant) ||
+										!isTenant)
+										return string.Format(token.indexFormat, offset);
+
+									string tenantId = @event.Properties.TryGetValue("tenantid", out var propertyValue)
+										? (propertyValue as ScalarValue)?.Value as string
+										: "unknown";
+
+									if (string.IsNullOrEmpty(tenantId))
+										tenantId = "global";
+
+									return string.Format(token.indexFormat.ToLower(), offset, tenantId.ToLower());
+								}
+
+							return string.Format(defaultIndexFormat, offset);
+						}
+					})
+				.CreateLogger();
 		}
 		#endregion
 
@@ -176,6 +259,8 @@ namespace DemoService.Microservice
 			AutoMapper.IConfigurationProvider autoMapper,
 			ILoggerFactory loggerFactory)
 		{
+			loggerFactory.AddSerilog();
+
 			ILogger logger = loggerFactory.CreateLogger("Demo Microservice startup");
 
 			#region add health check endpoint
@@ -219,7 +304,7 @@ namespace DemoService.Microservice
 				logger.LogInformation("Checked DB integrity");
 			}
 
-			//EventsBroker.Initialize(loggerFactory);
+			EventsBroker.Initialize(loggerFactory);
 
 			if (env.IsDevelopment())
 				app.UseDeveloperExceptionPage();
