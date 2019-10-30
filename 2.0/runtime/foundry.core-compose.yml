@@ -50,7 +50,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.maintenance:0.34-beta
+    image: truecommerce/foundry.core.security.maintenance:0.36-beta
     restart: always
     environment:
       # Core Security Microservice SQL connection string
@@ -71,13 +71,15 @@ services:
       - Foundry__Security__ExpiredExternalReferencesCleaner__Run=true
       # Expired ExternalReferences Cleaner cycle. It will sleep for Cycle - Actual Work Time but not less than 30 seconds between cycles
       - Foundry__Security__ExpiredExternalReferencesCleaner__Cycle=1.00:00:00
+      #elasticsearch
+      - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
 
   foundry_core_security_microservice:
     depends_on:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.microservice:0.34-beta
+    image: truecommerce/foundry.core.security.microservice:0.36-beta
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
