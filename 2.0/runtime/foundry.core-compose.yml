@@ -13,7 +13,7 @@ services:
       - "15672:15672"
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.2
     container_name: elasticsearch
     restart: always
     environment:
@@ -22,7 +22,7 @@ services:
       - bootstrap.memory_lock=true
       - discovery.zen.minimum_master_nodes=1
       - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
     ulimits:
       memlock:
         soft: -1
@@ -35,7 +35,7 @@ services:
   kibana:
     depends_on:
       - elasticsearch
-    image: docker.elastic.co/kibana/kibana:7.3.2
+    image: docker.elastic.co/kibana/kibana:7.4.2
     restart: always
     environment:
       - server.host=0
@@ -50,7 +50,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.maintenance:0.36-beta
+    image: truecommerce/foundry.core.security.maintenance:0.37-beta
     restart: always
     environment:
       # Core Security Microservice SQL connection string
@@ -79,7 +79,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.microservice:0.36-beta
+    image: truecommerce/foundry.core.security.microservice:0.37-beta
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
