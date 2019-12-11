@@ -60,7 +60,7 @@ services:
       # Expired Sessions Cleaner cycle. It will sleep for Cycle - Actual Work Time but not less than 30 seconds between cycles
       - Foundry__Security__ExpiredSessionsCleaner__Cycle=0.00:03:00
       # User Session timeout
-      - Foundry__Security__ExpiredSessionsCleaner__UserSessionTimeout=0.00:05:00
+      - Foundry__Security__ExpiredSessionsCleaner__UserSessionTimeout=0.00:15:00
       # indicates whether to run Expired Certificates Cleaner task
       - Foundry__Security__ExpiredCertificatesCleaner__Run=true
       # Expired Certificates Cleaner cycle. It will sleep for Cycle - Actual Work Time but not less than 30 seconds between cycles
@@ -92,7 +92,7 @@ services:
       # indicates whether to override user on logon
       - Foundry__Security__OverrideUserOnLogOn=true
       # user session timeout
-      - Foundry__Security__UserSessionTimeout=0.00:05:00
+      - Foundry__Security__UserSessionTimeout=0.00:15:00
       # RabbitMQ connection string
       - RabbitMQ__Connection=rabbitmq
       # RabbitMQ user
