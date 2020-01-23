@@ -101,6 +101,8 @@ services:
       - RabbitMQ__Password=<rabbitmq password>
       #elasticsearch
       - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
+      # Cloud license server connection string
+      - Foundry__Security__CloudLicenseService=https://licensing.truecommerce.com/LicensingManagement/LicenseManagerServer.svc
       #- ASPNETCORE_URLS=https://+;http://+
       #- ASPNETCORE_Kestrel__Certificates__Default__Password=<certificate password>
       #- ASPNETCORE_Kestrel__Certificates__Default__Path=/https/<certificate file name>
