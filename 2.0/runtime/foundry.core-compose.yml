@@ -94,6 +94,8 @@ services:
       - Foundry__Security__OverrideUserOnLogOn=true
       # user session timeout
       - Foundry__Security__UserSessionTimeout=0.00:15:00
+			# CORS whitelist
+			#- "CorsOriginAllowed"=host1,host2,host3
       # RabbitMQ connection string
       - RabbitMQ__Connection=rabbitmq
       # RabbitMQ user
