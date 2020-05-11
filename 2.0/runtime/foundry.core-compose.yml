@@ -102,6 +102,8 @@ services:
       - Foundry__RabbitMQ__User=<rabbitmq user>
       # RabbitMQ password
       - Foundry__RabbitMQ__Password=<rabbitmq password>
+      # RabbitMQ timeout
+      - Foundry__RabbitMQ__Timeout=0.00:01:00
       #elasticsearch
       - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
       # Cloud license server connection string
