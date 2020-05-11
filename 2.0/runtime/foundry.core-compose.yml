@@ -97,11 +97,11 @@ services:
       # CORS whitelist
       #- Foundry__Security__CorsOriginAllowed=host1,host2,host3
       # RabbitMQ connection string
-      - RabbitMQ__Connection=rabbitmq
+      - Foundry__RabbitMQ__Connection=rabbitmq
       # RabbitMQ user
-      - RabbitMQ__User=<rabbitmq user>
+      - Foundry__RabbitMQ__User=<rabbitmq user>
       # RabbitMQ password
-      - RabbitMQ__Password=<rabbitmq password>
+      - Foundry__RabbitMQ__Password=<rabbitmq password>
       #elasticsearch
       - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
       # Cloud license server connection string
