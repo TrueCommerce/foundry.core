@@ -51,7 +51,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.maintenance:0.57-rc2
+    image: truecommerce/foundry.core.security.maintenance:0.58-rc3
     restart: always
     environment:
       # Core Security Microservice SQL connection string
@@ -80,7 +80,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.microservice:0.57-rc2
+    image: truecommerce/foundry.core.security.microservice:0.58-rc3
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -97,7 +97,7 @@ services:
       # CORS whitelist
       #- Foundry__Security__CorsOriginAllowed=host1,host2,host3
       # RabbitMQ connection string
-      - Foundry__RabbitMQ__Connection=rabbitmq
+      - Foundry__RabbitMQ__Connection=rabbitmq://rabbitmq
       # RabbitMQ user
       - Foundry__RabbitMQ__User=<rabbitmq user>
       # RabbitMQ password
