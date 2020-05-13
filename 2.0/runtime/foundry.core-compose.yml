@@ -97,7 +97,7 @@ services:
       # CORS whitelist
       #- Foundry__Security__CorsOriginAllowed=host1,host2,host3
       # RabbitMQ connection string
-      - Foundry__RabbitMQ__Connection=rabbitmq://rabbitmq
+      - Foundry__RabbitMQ__Host=rabbitmq://rabbitmq
       # RabbitMQ user
       - Foundry__RabbitMQ__User=<rabbitmq user>
       # RabbitMQ password
