@@ -72,6 +72,14 @@ services:
       - Foundry__Security__ExpiredExternalReferencesCleaner__Run=true
       # Expired ExternalReferences Cleaner cycle. It will sleep for Cycle - Actual Work Time but not less than 30 seconds between cycles
       - Foundry__Security__ExpiredExternalReferencesCleaner__Cycle=1.00:00:00
+      # RabbitMQ connection string
+      - Foundry__RabbitMQ__Host=rabbitmq://rabbitmq
+      # RabbitMQ user
+      - Foundry__RabbitMQ__User=<rabbitmq user>
+      # RabbitMQ password
+      - Foundry__RabbitMQ__Password=<rabbitmq password>
+      # RabbitMQ timeout
+      - Foundry__RabbitMQ__Timeout=0.00:01:00
       #elasticsearch
       - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
 
