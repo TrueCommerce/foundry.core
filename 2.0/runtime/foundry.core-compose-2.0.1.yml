@@ -1,1 +1,134 @@
-asdad
+version: '3.4'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.8.2-management-alpine
+    restart: always
+    environment:
+      # RabbitMQ user
+      - RABBITMQ_DEFAULT_USER=<rabbitmq user>
+      # RabbitMQ password
+      - RABBITMQ_DEFAULT_PASS=<rabbitmq password>
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.2
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - cluster.name=elasticsearch
+      - network.host=0.0.0.0
+      - bootstrap.memory_lock=true
+      - discovery.zen.minimum_master_nodes=1
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+
+  kibana:
+    depends_on:
+      - elasticsearch
+    image: docker.elastic.co/kibana/kibana:7.4.2
+    restart: always
+    environment:
+      - server.host=0
+      - server.name=kibana
+      - elasticsearch.url=http://elasticsearch:9200
+      - xpack.monitoring.ui.container.elasticsearch.enabled=true
+    ports:
+      - 5601:5601
+
+  foundry.core.security.maintenance:
+    depends_on:
+      - rabbitmq
+      - elasticsearch
+      - kibana
+    image: truecommerce/foundry.core.security.maintenance:2.0.1
+    restart: always
+    environment:
+      # Core Security Microservice SQL connection string
+      - Foundry__Security__SQLConnection=<Core DB connection string>
+      # indicates whether to run Expired Sessions Cleaner task
+      - Foundry__Security__ExpiredSessionsCleaner__Run=true
+      # Expired Sessions Cleaner cycle. It will sleep for Cycle - Actual Work Time but not less than 30 seconds between cycles
+      - Foundry__Security__ExpiredSessionsCleaner__Cycle=0.00:03:00
+      # User Session timeout
+      - Foundry__Security__ExpiredSessionsCleaner__UserSessionTimeout=0.00:15:00
+      # indicates whether to run Expired Certificates Cleaner task
+      - Foundry__Security__ExpiredCertificatesCleaner__Run=true
+      # Expired Certificates Cleaner cycle. It will sleep for Cycle - Actual Work Time but not less than 30 seconds between cycles
+      - Foundry__Security__ExpiredCertificatesCleaner__Cycle=1.00:00:00
+      # Timeout to delete expired certificates (expired certificate will be deleted after specified timespan)
+      - Foundry__Security__ExpiredCertificatesCleaner__ExpiredCertificateTimeout=10.00:00:00
+      # indicates whether to run Expired ExternalReferences Cleaner task
+      - Foundry__Security__ExpiredExternalReferencesCleaner__Run=true
+      # Expired ExternalReferences Cleaner cycle. It will sleep for Cycle - Actual Work Time but not less than 30 seconds between cycles
+      - Foundry__Security__ExpiredExternalReferencesCleaner__Cycle=1.00:00:00
+      # RabbitMQ connection string
+      - Foundry__RabbitMQ__Host=rabbitmq://rabbitmq
+      # RabbitMQ user
+      - Foundry__RabbitMQ__User=<rabbitmq user>
+      # RabbitMQ password
+      - Foundry__RabbitMQ__Password=<rabbitmq password>
+      # RabbitMQ timeout
+      - Foundry__RabbitMQ__Timeout=0.00:01:00
+      #elasticsearch
+      - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
+
+  foundry_core_security_microservice:
+    depends_on:
+      - rabbitmq
+      - elasticsearch
+      - kibana
+    image: truecommerce/foundry.core.security.microservice:2.0.1
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # Core Security Microservice SQL connection string
+      - Foundry__Security__SQLConnection=<Core DB connection string>
+      # JWT secret
+      - Foundry__Security__JwtSecret=<Jwt Secret>
+      # JWT default expire time
+      - Foundry__Security__JwtDefaultExpireTime=0.00:30:00
+      # indicates whether to override user on logon
+      - Foundry__Security__OverrideUserOnLogOn=true
+      # user session timeout
+      - Foundry__Security__UserSessionTimeout=0.00:15:00
+      # CORS whitelist
+      #- Foundry__Security__CorsOriginAllowed=host1,host2,host3
+      # RabbitMQ connection string
+      - Foundry__RabbitMQ__Host=rabbitmq://rabbitmq
+      # RabbitMQ user
+      - Foundry__RabbitMQ__User=<rabbitmq user>
+      # RabbitMQ password
+      - Foundry__RabbitMQ__Password=<rabbitmq password>
+      # RabbitMQ timeout
+      - Foundry__RabbitMQ__Timeout=0.00:01:00
+      #elasticsearch
+      - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
+      # Cloud license server connection string
+      - Foundry__Security__CloudLicenseService=https://licensing.truecommerce.com/LicensingManagement/LicenseManagerServer.svc
+      #- ASPNETCORE_URLS=https://+;http://+
+      #- ASPNETCORE_Kestrel__Certificates__Default__Password=<certificate password>
+      #- ASPNETCORE_Kestrel__Certificates__Default__Path=/https/<certificate file name>
+    #volumes:
+      #- <certificate folder path>:/https/
+    ports:
+      - "30100:80"
+    healthcheck:
+      start_period: 30s
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      test: curl --fail -s http://localhost/healthcheck || exit 1
+
+volumes:
+  esdata:
