@@ -51,7 +51,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.maintenance:2.0.1
+    image: truecommerce/foundry.core.security.maintenance:2.0.1.rc2
     restart: always
     environment:
       # Core Security Microservice SQL connection string
