@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Foundry.Core.Security.Client.Events;
 using Foundry.Shared;
 using Microsoft.Extensions.Configuration;
 using UseCasesPlayground.Cases;
@@ -19,9 +20,13 @@ namespace UseCasesPlayground
 				var configuration = builder.Build();
 				var coreSecurityRootUri = new Uri(configuration["CoreSecurityRootUri"]);
 
+				SecurityEventsBroker.SkipEvents = true;
+
 				//SecurityRelated.LoginRefreshLogout(coreSecurityRootUri).Wait();
 				//SecurityRelated.JwtWithCachedUser(coreSecurityRootUri).Wait();
-				SecurityRelated.CertificateWithCachedUser(coreSecurityRootUri).Wait();
+				//SecurityRelated.CertificateWithCachedUser(coreSecurityRootUri).Wait();
+
+				Extensions.TestTaskRetryHelper().Wait();
 			}
 			catch (Exception e)
 			{
