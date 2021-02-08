@@ -51,7 +51,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.maintenance:2.0.1.rc2
+    image: truecommerce/foundry.core.security.maintenance:2.1.0.beta1
     restart: always
     environment:
       # Core Security Microservice SQL connection string
@@ -60,8 +60,6 @@ services:
       - Foundry__Security__ExpiredSessionsCleaner__Run=true
       # Expired Sessions Cleaner cycle. It will sleep for Cycle - Actual Work Time but not less than 30 seconds between cycles
       - Foundry__Security__ExpiredSessionsCleaner__Cycle=0.00:03:00
-      # User Session timeout
-      - Foundry__Security__ExpiredSessionsCleaner__UserSessionTimeout=0.00:15:00
       # indicates whether to run Expired Certificates Cleaner task
       - Foundry__Security__ExpiredCertificatesCleaner__Run=true
       # Expired Certificates Cleaner cycle. It will sleep for Cycle - Actual Work Time but not less than 30 seconds between cycles
@@ -88,7 +86,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.microservice:2.0.1.rc2
+    image: truecommerce/foundry.core.security.microservice:2.1.0.beta1
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
