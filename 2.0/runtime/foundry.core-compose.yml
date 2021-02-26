@@ -98,8 +98,6 @@ services:
       - Foundry__Security__JwtDefaultExpireTime=0.00:30:00
       # indicates whether to override user on logon
       - Foundry__Security__OverrideUserOnLogOn=true
-      # user session timeout
-      - Foundry__Security__UserSessionTimeout=0.00:15:00
       # CORS whitelist
       #- Foundry__Security__CorsOriginAllowed=host1,host2,host3
       # RabbitMQ connection string
