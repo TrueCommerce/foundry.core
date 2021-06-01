@@ -1,0 +1,37 @@
+-- for development
+-- requirements: Windows 10 Pro / Enterprise
+
+-- 1. install Dcoker for Windows following instructions:
+
+-- https://docs.docker.com/docker-for-windows/install/
+
+
+-- 2. install DockerCompletion powershell extension for docker
+
+-- start powershell (as admin), need to start real powershell
+-- Set the script execution policy to allow downloaded scripts signed by trusted publishers to run on your computer
+Set-ExecutionPolicy RemoteSigned
+
+-- Install the DockerCompletion PowerShell module for auto-completion of Docker commands (answer Y if it asks to install NuGet manager)
+Install-Module DockerCompletion
+Import-Module DockerCompletion
+
+-- start powershell for regular user
+-- To make tab completion persistent across all PowerShell sessions, add the command to a $PROFILE by typing these commands at the PowerShell prompt.
+-- create / edit $PROFILE in Notepad
+Notepad $PROFILE
+
+-- add the following to profile: Import-Module DockerCompletion
+
+
+-- 3. highly recommend to install console emulator: http://cmder.net
+-- it's absolutely free and greatly improves work with cmd and powershell
+
+-- 4. Please, read, getting started guide https://docs.docker.com/get-started/
+
+-- note: if you play with some test / demo images you might want to clear them After,
+-- so they will not take disk space
+-- list all images
+docker image ls -a
+-- force remove image
+docker image rm [image id ... you do not need to copy the whole id, just the 1st couple of chars]
