@@ -12,20 +12,20 @@ https://docs.docker.com/docker-for-windows/install/
 
 1. Start powershell (as admin), need to start real powershell
 
-- Set the script execution policy to allow downloaded scripts signed by trusted publishers to run on your computer
+2. Set the script execution policy to allow downloaded scripts signed by trusted publishers to run on your computer
 
 ```bash
 Set-ExecutionPolicy RemoteSigned
 ```
 
-2. Install the DockerCompletion PowerShell module for auto-completion of Docker commands (answer Y if it asks to install NuGet manager)
+3. Install the DockerCompletion PowerShell module for auto-completion of Docker commands (answer Y if it asks to install NuGet manager)
 
 ```bash
 Install-Module DockerCompletion
 Import-Module DockerCompletion
 ```
 
-3. Start powershell for regular user  
+4. Start powershell for regular user  
    To make tab completion persistent across all PowerShell sessions, add the command to a $PROFILE by typing these commands at the PowerShell prompt.  
    Create / edit $PROFILE in Notepad
 
@@ -33,7 +33,7 @@ Import-Module DockerCompletion
 Notepad $PROFILE
 ```
 
-4. Add the following to profile:
+5. Add the following to profile:
 
 ```bash
 Import-Module DockerCompletion

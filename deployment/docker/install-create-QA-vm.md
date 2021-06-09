@@ -11,7 +11,9 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 
 1. Start Hyper-V Manager  
    Action -> Quick Create
+
 2. Select "Ubuntu 18.04.1 LTS" or later version if available
+
 3. Expand "More Options" at the bottom right corner  
    Enter VM name, e.g. "Foundry QA Docker"  
    Select network, "Default Switch"
@@ -28,23 +30,31 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 
 1. Click "Connect" to connect to VM and click "Start" button  
    Ubuntu installation will be started automatically
+
 2. Select language -> Continue
+
 3. Select Keyboard Layout -> Continue
+
 4. Select / enter Location (for time zone) -> Continue
+
 5. Enter user / computer information = > Continue
+
    > For example:  
    > User Name: QA Tester  
    > Your Computer's Name: Foundry-QA-VM  
    > Username: qatester  
    > Password: qa@test#123
+
 6. Select "Login Automatically", so will not need to enter password every time  
    it will start Ubuntu installation and system configuration
+
    > It might pop a dialog "Connect to Foundry QA Docker", just close it after installation / configuration is finished, it will show dialog to do some configurations just click Next -> Next -> Next -> done
 
 \
 **Remove unnecessary software**
 
 1. Ubuntu Desktop -> Show Applications (button at the bottom left) -> Ubuntu Software (usually on the second page)
+
    > as alternative can click "Ubuntu Software" button at the vertical panel at the left
    > Switch to "Installed" tab and uninstall all unnecessary software (games / editors / etc)
 
@@ -53,7 +63,9 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 
 1. Ubuntu Desktop -> Show Applications (button at the bottom left) -> Software Updater  
    it will automatically check for updates
+
 2. Click "Install Now"
+
 3. Click "Restart Now" after done
 
 \
@@ -61,9 +73,12 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 
 1. In Hyper-V manager  
    Action -> Virtual Switch Manager
+
 2. At the right side select "External"  
    click "Create Virtual Switch"
+
 3. Assign a name, for example "External Switch"
+
 4. Make sure that "External Network" is selected  
    Select network adapter from drop-down (preferably WiFi if on notebook)  
    Ok - Yes
@@ -81,6 +96,7 @@ It is used to access Linux terminal remotely through SSH client.
 
 1. Ubuntu Desktop -> Show Applications (button at the bottom left) -> Terminal  
    can right-click on Terminal -> Add to Favorites, so it will add it to favorites bar
+
 2. Update packages info
 
 ```bash
@@ -116,6 +132,7 @@ sudo service ssh restart
 
 1. In Hyper-V Manager select "Foundry QA Docker" VM and at the bottom switch to "Networking" tab  
    there you will see VM IP address, need to remember one for the "External Switch", for example: 10.0.1.23
+
 2. on host Windows system, start either cmd or powershell
 
 ```bash
@@ -157,6 +174,7 @@ sudo apt-get install curl
 **Install Docker CE**
 
 1. Either start terminal in Ubuntu desktop or remote ssh from host Windows
+
 2. Download Docker installation script
 
 ```bash
@@ -182,6 +200,7 @@ sudo usermod -aG docker qatester
 ```
 
 5. Might need to logout/login Ubuntu Desktop or ssh in order to take effect
+
 6. Test installation
 
 ```bash
@@ -194,6 +213,7 @@ docker version
 Docker-compose is a tool that allows to deploy and configure a bunch of docker containers using yaml configuration file
 
 1. Either start terminal in Ubuntu desktop or remote ssh from host Windows
+
 2. Download latest docker-compose  
    can check the latest version at https://github.com/docker/compose/releases
 
@@ -223,6 +243,7 @@ docker-compose version
 **Test Docker containers**
 
 1. Either start terminal in Ubuntu desktop or remote ssh from host Windows
+
 2. Start hello-world container  
    if it downloaded and started successfully, should see something like:
    > This message shows that your installation appears to be working correctly.
