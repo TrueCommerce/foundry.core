@@ -9,14 +9,14 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 \
 **Create Ubuntu VM in Hyper-V**
 
-- Start Hyper-V Manager  
-  Action -> Quick Create
-- Select "Ubuntu 18.04.1 LTS" or later version if available
-- Expand "More Options" at the bottom right corner  
-  Enter VM name, e.g. "Foundry QA Docker"  
-  Select network, "Default Switch"
-- Click "Create Virtual Machine"  
-  Hyper-V Manager will download image from internet (if necessary) and will automatically create VM
+1. Start Hyper-V Manager  
+   Action -> Quick Create
+2. Select "Ubuntu 18.04.1 LTS" or later version if available
+3. Expand "More Options" at the bottom right corner  
+   Enter VM name, e.g. "Foundry QA Docker"  
+   Select network, "Default Switch"
+4. Click "Create Virtual Machine"  
+   Hyper-V Manager will download image from internet (if necessary) and will automatically create VM
 
 \
 **Configure VM if necessary**
@@ -26,86 +26,86 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 \
 **Connect to VM, configure and start Ubuntu installation**
 
-- Click "Connect" to connect to VM and click "Start" button  
-  Ubuntu installation will be started automatically
-- Select language -> Continue
-- Select Keyboard Layout -> Continue
-- Select / enter Location (for time zone) -> Continue
-- Enter user / computer information = > Continue
-  > For example:  
-  > User Name: QA Tester  
-  > Your Computer's Name: Foundry-QA-VM  
-  > Username: qatester  
-  > Password: qa@test#123
-- Select "Login Automatically", so will not need to enter password every time  
-  it will start Ubuntu installation and system configuration
-  > It might pop a dialog "Connect to Foundry QA Docker", just close it after installation / configuration is finished, it will show dialog to do some configurations just click Next -> Next -> Next -> done
+1. Click "Connect" to connect to VM and click "Start" button  
+   Ubuntu installation will be started automatically
+2. Select language -> Continue
+3. Select Keyboard Layout -> Continue
+4. Select / enter Location (for time zone) -> Continue
+5. Enter user / computer information = > Continue
+   > For example:  
+   > User Name: QA Tester  
+   > Your Computer's Name: Foundry-QA-VM  
+   > Username: qatester  
+   > Password: qa@test#123
+6. Select "Login Automatically", so will not need to enter password every time  
+   it will start Ubuntu installation and system configuration
+   > It might pop a dialog "Connect to Foundry QA Docker", just close it after installation / configuration is finished, it will show dialog to do some configurations just click Next -> Next -> Next -> done
 
 \
 **Remove unnecessary software**
 
-- Ubuntu Desktop -> Show Applications (button at the bottom left) -> Ubuntu Software (usually on the second page)
-  > as alternative can click "Ubuntu Software" button at the vertical panel at the left
-  > Switch to "Installed" tab and uninstall all unnecessary software (games / editors / etc)
+1. Ubuntu Desktop -> Show Applications (button at the bottom left) -> Ubuntu Software (usually on the second page)
+   > as alternative can click "Ubuntu Software" button at the vertical panel at the left
+   > Switch to "Installed" tab and uninstall all unnecessary software (games / editors / etc)
 
 \
 **Update system**
 
-- Ubuntu Desktop -> Show Applications (button at the bottom left) -> Software Updater  
-  it will automatically check for updates
-- Click "Install Now"
-- Click "Restart Now" after done
+1. Ubuntu Desktop -> Show Applications (button at the bottom left) -> Software Updater  
+   it will automatically check for updates
+2. Click "Install Now"
+3. Click "Restart Now" after done
 
 \
 **Add External Hyper-V switch, so can access VM remotely**
 
-- In Hyper-V manager  
-  Action -> Virtual Switch Manager
-- At the right side select "External"  
-  click "Create Virtual Switch"
-- Assign a name, for example "External Switch"
-- Make sure that "External Network" is selected  
-  Select network adapter from drop-down (preferably WiFi if on notebook)  
-  Ok - Yes
-- Select "Foundry QA VM"
-  Settings...
-  - select "Add Hardware" at the left side and "Network Adapter" at the right side  
-    Add -> select "External Switch" from drop-down -> Ok
-  - restart VM  
-    Shutdown -> Start
+1. In Hyper-V manager  
+   Action -> Virtual Switch Manager
+2. At the right side select "External"  
+   click "Create Virtual Switch"
+3. Assign a name, for example "External Switch"
+4. Make sure that "External Network" is selected  
+   Select network adapter from drop-down (preferably WiFi if on notebook)  
+   Ok - Yes
+5. Select "Foundry QA VM"  
+   Settings...
+   - select "Add Hardware" at the left side and "Network Adapter" at the right side
+     Add -> select "External Switch" from drop-down -> Ok
+   - restart VM  
+     Shutdown -> Start
 
 \
 **Install OpenSSH Server**
 
 It is used to access Linux terminal remotely through SSH client.
 
-- Ubuntu Desktop -> Show Applications (button at the bottom left) -> Terminal  
-  can right-click on Terminal -> Add to Favorites, so it will add it to favorites bar
-- Update packages info
+1. Ubuntu Desktop -> Show Applications (button at the bottom left) -> Terminal  
+   can right-click on Terminal -> Add to Favorites, so it will add it to favorites bar
+2. Update packages info
 
 ```bash
 sudo apt-get update
 ```
 
-- Install open ssh server
+3. Install open ssh server
 
 ```bash
 sudo apt-get install openssh-server
 ```
 
-- Check status
+4. Check status
 
 ```bash
 sudo service ssh status
 ```
 
-- Modify ssh configuration if necessary
+5. Modify ssh configuration if necessary
 
 ```bash
 sudo nano /etc/ssh/sshd_config
 ```
 
-- If added / modified ssh config, restart ssh service
+6. If added / modified ssh config, restart ssh service
 
 ```bash
 sudo service ssh restart
@@ -114,9 +114,9 @@ sudo service ssh restart
 \
 **Test ssh**
 
-- In Hyper-V Manager select "Foundry QA Docker" VM and at the bottom switch to "Networking" tab  
-  there you will see VM IP address, need to remember one for the "External Switch", for example: 10.0.1.23
-- on host Windows system, start either cmd or powershell
+1. In Hyper-V Manager select "Foundry QA Docker" VM and at the bottom switch to "Networking" tab  
+   there you will see VM IP address, need to remember one for the "External Switch", for example: 10.0.1.23
+2. on host Windows system, start either cmd or powershell
 
 ```bash
 ssh [VM IP address] -l [user name]
@@ -141,13 +141,13 @@ After entering password it should open linux ssh remote terminal
 
 Curl is used to download files from internet from terminal
 
-- Update packages info
+1. Update packages info
 
 ```bash
 sudo apt-get update
 ```
 
-- Install open ssh server
+2. Install open ssh server
 
 ```bash
 sudo apt-get install curl
@@ -156,20 +156,20 @@ sudo apt-get install curl
 \
 **Install Docker CE**
 
-- Either start terminal in Ubuntu desktop or remote ssh from host Windows
-- Download Docker installation script
+1. Either start terminal in Ubuntu desktop or remote ssh from host Windows
+2. Download Docker installation script
 
 ```bash
 curl -fsSL https://get.docker.com -o get-docker.sh
 ```
 
-- Execute Docker installation script
+3. Execute Docker installation script
 
 ```bash
 sudo sh get-docker.sh
 ```
 
-- Add current user to the Docker group, so will not need to "sudo" when executing Docker commands
+4. Add current user to the Docker group, so will not need to "sudo" when executing Docker commands
 
 ```bash
 sudo usermod -aG docker [user name]
@@ -181,38 +181,39 @@ sudo usermod -aG docker [user name]
 sudo usermod -aG docker qatester
 ```
 
-- Might need to logout/login Ubuntu Desktop or ssh in order to take effect
-- Test installation
+5. Might need to logout/login Ubuntu Desktop or ssh in order to take effect
+6. Test installation
 
 ```bash
 docker version
 ```
 
+\
 **Install Docker-Compose**
 
 Docker-compose is a tool that allows to deploy and configure a bunch of docker containers using yaml configuration file
 
-- Either start terminal in Ubuntu desktop or remote ssh from host Windows
-- Download latest docker-compose  
-  can check the latest version at https://github.com/docker/compose/releases
+1. Either start terminal in Ubuntu desktop or remote ssh from host Windows
+2. Download latest docker-compose  
+   can check the latest version at https://github.com/docker/compose/releases
 
 ```bash
 sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 ```
 
-- Apply executable permissions to the binary
+3. Apply executable permissions to the binary
 
 ```bash
 sudo chmod +x /usr/local/bin/docker-compose
 ```
 
-- If need create symlink (if cannot run docker-compose ... not found)
+4. If need create symlink (if cannot run docker-compose ... not found)
 
 ```bash
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 ```
 
-- Test installation
+5. Test installation
 
 ```bash
 docker-compose version
@@ -221,38 +222,38 @@ docker-compose version
 \
 **Test Docker containers**
 
-- Either start terminal in Ubuntu desktop or remote ssh from host Windows
-- Start hello-world container  
-  if it downloaded and started successfully, should see something like:
-  > This message shows that your installation appears to be working correctly.
+1. Either start terminal in Ubuntu desktop or remote ssh from host Windows
+2. Start hello-world container  
+   if it downloaded and started successfully, should see something like:
+   > This message shows that your installation appears to be working correctly.
 
 ```bash
 docker run hello-world:linux
 ```
 
-- List all containers.  
-  Should see hello:world:linux container exited sometime ago
+3. List all containers.  
+   Should see hello:world:linux container exited sometime ago
 
 ```bash
 docker container ls -a
 ```
 
-- Remove test container
-  > no need for full id, can just use first couple of characters from id
+4. Remove test container
+   > no need for full id, can just use first couple of characters from id
 
 ```bash
 docker container rm -f [container id]
 ```
 
-- List all images
-  > should see hello-world image with "linux" tag
+5. List all images
+   > should see hello-world image with "linux" tag
 
 ```bash
 docker image ls -a
 ```
 
-- Delete test image
-  > no need for full id, can just use first couple of characters from id
+6. Delete test image
+   > no need for full id, can just use first couple of characters from id
 
 ```bash
 docker image rm -f [image id or name:tag]
