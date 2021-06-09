@@ -4,8 +4,8 @@
 \
 **Install Docker for Windows following instructions**
 
-https://docs.docker.com/docker-for-windows/install/  
-\
+https://docs.docker.com/docker-for-windows/install/
+
 \
 **Install DockerCompletion powershell extension for docker**
 
@@ -39,12 +39,11 @@ Import-Module DockerCompletion
 ```
 
 \
-\
 **Install console emulator**
 
 it's absolutely free and greatly improves work with cmd and powershell  
 http://cmder.net
-\
+
 \
 **Please, read, getting started guide**
 
