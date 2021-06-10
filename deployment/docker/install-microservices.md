@@ -16,7 +16,7 @@ If using Foundry Docker QA VM...
 ssh [VM IP address] -l [user name]
 ```
 
-- for example:
+example
 
 ```bash
 ssh 10.0.1.13 -l qatester
@@ -43,7 +43,7 @@ These tools will automatically (_if necessary_) create microservices tables in D
 > press 'y' to continue when asked ... also can use optional /Y to skip all questions
 > also can use optional /skipcorecheck parameter to skip old Core Tenants integrity check ... useful for huge db when upgrading
 
-- Migrate Security Microservice data
+1. Migrate Security Microservice data
 
 ```bash
 docker run -it --rm truecommerce/foundry.core.tools:[microservices version] /service:security /migratedb /sqlconnection:"[MicroServices DB connection string]" /coresqlconnection:"[Core DB connection string]]"
@@ -71,7 +71,7 @@ curl -SL https://raw.githubusercontent.com/TrueCommerce/foundry.core/master/depl
 nano foundry.core-compose.yml
 ```
 
-2. Assign rabbitmq default user name and password in the following lines: - ```bash
+2. Assign rabbitmq default user name and password in the following lines:
 
 ```yaml
 - RABBITMQ_DEFAULT_USER=<rabbitmq user>
@@ -92,7 +92,7 @@ nano foundry.core-compose.yml
 3. Set Security MicroServices DB connection string in the following lines
 
 - one for foundry_core_security_maintenance
-- and one for foundry_core_security_microservice
+- one for foundry_core_security_microservice
 
 ```yaml
 - Foundry__Security__SQLConnection=<Core DB connection string>
