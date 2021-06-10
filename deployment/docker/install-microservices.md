@@ -6,8 +6,6 @@
 
 ## Connect to Docker machine
 
----
-
 If using Foundry Docker QA VM...
 
 1. In Hyper-V Manager select "Foundry QA Docker" VM and at the bottom switch to "Networking" tab there you will see VM IP address, need to remember one for the "External Switch", for example: 10.0.1.13
@@ -30,8 +28,6 @@ ssh 10.0.1.13 -l qatester
 
 ## Generate JWS Secret
 
----
-
 ```bash
 docker run -it --rm truecommerce/foundry.core.tools /service:security /generatejwtsecret
 ```
@@ -41,8 +37,6 @@ docker run -it --rm truecommerce/foundry.core.tools /service:security /generatej
 &nbsp;
 
 ## Migrate Core DB data to Microservices DBs
-
----
 
 These tools will automatically (_if necessary_) create microservices tables in DB and migrate all the related data from old Core DB. Make sure that you are specified appropriate microservices version. Can share Core DB and microservices DBs if needed, their tables do not overlap.
 
@@ -59,8 +53,6 @@ docker run -it --rm truecommerce/foundry.core.tools:[microservices version] /ser
 
 ## Download deployment file
 
----
-
 1. Download Docker-Compose Foundry deployment file from TrueCommerce official github repository
 
 2. Use curl or any other utility to get file from url
@@ -72,8 +64,6 @@ curl -SL https://raw.githubusercontent.com/TrueCommerce/foundry.core/master/depl
 &nbsp;
 
 ## Configure deployment file
-
----
 
 1. Open foundry.core-compose.yml in nano editor (or any other installed editor)
 
@@ -124,8 +114,6 @@ nano foundry.core-compose.yml
 
 ## Configure https (optional)
 
----
-
 1. Uncomment the following lines in foundry_core_security_microservice
    > just remove # sign
 
@@ -175,8 +163,6 @@ ports: - "30100:443"
 
 ## Deploy Microservices
 
----
-
 1. Deploy all microservices and detach
 
 ```bash
@@ -192,8 +178,6 @@ docker container ls -a
 &nbsp;
 
 ## Test containers
-
----
 
 **Security MicroService**
 
@@ -231,8 +215,6 @@ docker logs [container id ... can use just a first few characters from id, do no
 &nbsp;
 
 ## Stop and remove MicroServices (if needed)
-
----
 
 ```bash
 docker-compose -p '<tag, usually dev or qa>' -f foundry.core-compose.yml down

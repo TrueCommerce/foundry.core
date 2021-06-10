@@ -6,15 +6,11 @@
 
 ## Enable Hyper-V Platform and Hyper-V Management Tools
 
----
-
 https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v
 
 &nbsp;
 
 ## Create Ubuntu VM in Hyper-V
-
----
 
 1. Start Hyper-V Manager  
    Action -> Quick Create
@@ -31,15 +27,11 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 
 ## Configure VM if necessary
 
----
-
 1. Click "Edit settings..."
 
 &nbsp;
 
 ## Connect to VM, configure and start Ubuntu installation
-
----
 
 1. Click "Connect" to connect to VM and click "Start" button  
    Ubuntu installation will be started automatically
@@ -67,8 +59,6 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 
 ## Remove unnecessary software
 
----
-
 1. Ubuntu Desktop -> Show Applications (button at the bottom left) -> Ubuntu Software (usually on the second page)
 
    > as alternative can click "Ubuntu Software" button at the vertical panel at the left
@@ -77,8 +67,6 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 &nbsp;
 
 ## Update system
-
----
 
 1. Ubuntu Desktop -> Show Applications (button at the bottom left) -> Software Updater  
    it will automatically check for updates
@@ -90,8 +78,6 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 &nbsp;
 
 ## Add External Hyper-V switch, so can access VM remotely
-
----
 
 1. In Hyper-V manager  
    Action -> Virtual Switch Manager
@@ -114,8 +100,6 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 &nbsp;
 
 ## Install OpenSSH Server
-
----
 
 It is used to access Linux terminal remotely through SSH client.
 
@@ -156,8 +140,6 @@ sudo service ssh restart
 
 ## Test ssh
 
----
-
 1. In Hyper-V Manager select "Foundry QA Docker" VM and at the bottom switch to "Networking" tab  
    there you will see VM IP address, need to remember one for the "External Switch", for example: 10.0.1.23
 
@@ -185,8 +167,6 @@ After entering password it should open linux ssh remote terminal
 
 ## Install curl
 
----
-
 Curl is used to download files from internet from terminal
 
 1. Update packages info
@@ -204,8 +184,6 @@ sudo apt-get install curl
 &nbsp;
 
 ## Install Docker CE
-
----
 
 1. Either start terminal in Ubuntu desktop or remote ssh from host Windows
 
@@ -245,8 +223,6 @@ docker version
 
 ## Install Docker-Compose
 
----
-
 Docker-compose is a tool that allows to deploy and configure a bunch of docker containers using yaml configuration file
 
 1. Either start terminal in Ubuntu desktop or remote ssh from host Windows
@@ -279,8 +255,6 @@ docker-compose version
 &nbsp;
 
 ## Test Docker containers
-
----
 
 1. Either start terminal in Ubuntu desktop or remote ssh from host Windows
 
