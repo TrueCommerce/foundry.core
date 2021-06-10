@@ -2,13 +2,19 @@
 
 **Requirements**: Windows 10 Pro / Enterprise
 
-\
-**Install Docker for Windows following instructions**
+&nbsp;
 
-https://docs.docker.com/docker-for-windows/install/
+## Install Docker for Windows
 
-\
-**Install DockerCompletion powershell extension for docker**
+---
+
+Install Docker for Windows following instructions: https://docs.docker.com/docker-for-windows/install/
+
+&nbsp;
+
+## Install DockerCompletion powershell extension for docker
+
+---
 
 1. Start powershell (as admin), need to start real powershell
 
@@ -39,16 +45,21 @@ Notepad $PROFILE
 Import-Module DockerCompletion
 ```
 
-\
-**Install console emulator**
+&nbsp;
 
-it's absolutely free and greatly improves work with cmd and powershell  
-http://cmder.net
+## Install console emulator
 
-\
-**Please, read, getting started guide**
+---
 
-https://docs.docker.com/get-started/
+It is absolutely free and greatly improves work with cmd and powershell http://cmder.net
+
+&nbsp;
+
+## Getting started guide
+
+---
+
+Please, read, getting started guide https://docs.docker.com/get-started/
 
 > if you play with some test / demo images you might want to clear them After, so they will not take disk space
 

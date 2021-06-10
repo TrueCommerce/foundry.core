@@ -1,13 +1,20 @@
 # How to create Docker Hyper-V VM for QA
 
-**Requirements**: Windows 10 Pro / Enterprise with Hyper-V support  
-\
-**Enable Hyper-V Platform and Hyper-V Management Tools**
+**Requirements**: Windows 10 Pro / Enterprise with Hyper-V support
+
+&nbsp;
+
+## Enable Hyper-V Platform and Hyper-V Management Tools
+
+---
 
 https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v
 
-\
-**Create Ubuntu VM in Hyper-V**
+&nbsp;
+
+## Create Ubuntu VM in Hyper-V
+
+---
 
 1. Start Hyper-V Manager  
    Action -> Quick Create
@@ -20,13 +27,19 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 4. Click "Create Virtual Machine"  
    Hyper-V Manager will download image from internet (if necessary) and will automatically create VM
 
-\
-**Configure VM if necessary**
+&nbsp;
 
-- Click "Edit settings..."
+## Configure VM if necessary
 
-\
-**Connect to VM, configure and start Ubuntu installation**
+---
+
+1. Click "Edit settings..."
+
+&nbsp;
+
+## Connect to VM, configure and start Ubuntu installation
+
+---
 
 1. Click "Connect" to connect to VM and click "Start" button  
    Ubuntu installation will be started automatically
@@ -50,16 +63,22 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 
    > It might pop a dialog "Connect to Foundry QA Docker", just close it after installation / configuration is finished, it will show dialog to do some configurations just click Next -> Next -> Next -> done
 
-\
-**Remove unnecessary software**
+&nbsp;
+
+## Remove unnecessary software
+
+---
 
 1. Ubuntu Desktop -> Show Applications (button at the bottom left) -> Ubuntu Software (usually on the second page)
 
    > as alternative can click "Ubuntu Software" button at the vertical panel at the left
    > Switch to "Installed" tab and uninstall all unnecessary software (games / editors / etc)
 
-\
-**Update system**
+&nbsp;
+
+## Update system
+
+---
 
 1. Ubuntu Desktop -> Show Applications (button at the bottom left) -> Software Updater  
    it will automatically check for updates
@@ -68,8 +87,11 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
 
 3. Click "Restart Now" after done
 
-\
-**Add External Hyper-V switch, so can access VM remotely**
+&nbsp;
+
+## Add External Hyper-V switch, so can access VM remotely
+
+---
 
 1. In Hyper-V manager  
    Action -> Virtual Switch Manager
@@ -89,8 +111,11 @@ https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/e
    - restart VM  
      Shutdown -> Start
 
-\
-**Install OpenSSH Server**
+&nbsp;
+
+## Install OpenSSH Server
+
+---
 
 It is used to access Linux terminal remotely through SSH client.
 
@@ -127,8 +152,11 @@ sudo nano /etc/ssh/sshd_config
 sudo service ssh restart
 ```
 
-\
-**Test ssh**
+&nbsp;
+
+## Test ssh
+
+---
 
 1. In Hyper-V Manager select "Foundry QA Docker" VM and at the bottom switch to "Networking" tab  
    there you will see VM IP address, need to remember one for the "External Switch", for example: 10.0.1.23
@@ -139,7 +167,7 @@ sudo service ssh restart
 ssh [VM IP address] -l [user name]
 ```
 
-- for example:
+for example:
 
 ```bash
 ssh 10.0.1.23 -l qatester
@@ -153,8 +181,11 @@ After entering password it should open linux ssh remote terminal
 > Sometimes somehow copy-paste from host Windows into Hyper-V Ubuntu VM does not work (clipboard is not shared)
 > but using SSH instead of Ubuntu Desktop terminal solves the problem since SSH terminal is just a regular program in Windows
 
-\
-**Install curl**
+&nbsp;
+
+## Install curl
+
+---
 
 Curl is used to download files from internet from terminal
 
@@ -170,8 +201,11 @@ sudo apt-get update
 sudo apt-get install curl
 ```
 
-\
-**Install Docker CE**
+&nbsp;
+
+## Install Docker CE
+
+---
 
 1. Either start terminal in Ubuntu desktop or remote ssh from host Windows
 
@@ -207,8 +241,11 @@ sudo usermod -aG docker qatester
 docker version
 ```
 
-\
-**Install Docker-Compose**
+&nbsp;
+
+## Install Docker-Compose
+
+---
 
 Docker-compose is a tool that allows to deploy and configure a bunch of docker containers using yaml configuration file
 
@@ -239,8 +276,11 @@ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 docker-compose version
 ```
 
-\
-**Test Docker containers**
+&nbsp;
+
+## Test Docker containers
+
+---
 
 1. Either start terminal in Ubuntu desktop or remote ssh from host Windows
 
