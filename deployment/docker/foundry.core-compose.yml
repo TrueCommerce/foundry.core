@@ -51,7 +51,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.maintenance:2.5.0.alpha-1
+    image: truecommerce/foundry.core.security.maintenance:2.5.0.alpha-2
     restart: always
     environment:
       # Core Security Microservice SQL connection string
@@ -86,7 +86,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.microservice:2.5.0.alpha-1
+    image: truecommerce/foundry.core.security.microservice:2.5.0.alpha-2
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -117,14 +117,25 @@ services:
       #- ASPNETCORE_Kestrel__Certificates__Default__Path=/https/<certificate file name>
     #volumes:
     #- <certificate folder path>:/https/
+    expose:
+      - "80"
+    # healthcheck:
+    #   start_period: 30s
+    #   interval: 1m30s
+    #   timeout: 10s
+    #   retries: 3
+    #   test: curl --fail -s http://localhost/healthcheck || exit 1
+
+  foundry.core.apigateway.microservice:
+    depends_on:
+      - foundry_core_security_microservice
+    image: truecommerce/foundry.core.apigateway.microservice:2.5.0.alpha-2
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ReverseProxy__Clusters__security_microservice__Destinations__security_microservice/destination1__Address=http://foundry_core_security_microservice
     ports:
       - "30100:80"
-    healthcheck:
-      start_period: 30s
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      test: curl --fail -s http://localhost/healthcheck || exit 1
 
 volumes:
   esdata:
