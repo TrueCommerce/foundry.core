@@ -51,7 +51,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.maintenance:2.5.0.alpha-2
+    image: truecommerce/foundry.core.security.maintenance:2.5.0.alpha-3
     restart: always
     environment:
       # Core Security Microservice SQL connection string
@@ -86,12 +86,12 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.microservice:2.5.0.alpha-2
+    image: truecommerce/foundry.core.security.microservice:2.5.0.alpha-3
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       # Core Security Microservice SQL connection string
-      - Foundry__Security__SQLConnection=<Core DB connection string>
+      - Foundry__Security__SQLConnection=<Security DB connection string>
       # JWT secret
       - Foundry__Security__JwtSecret=<Jwt Secret>
       # JWT default expire time
@@ -126,14 +126,48 @@ services:
     #   retries: 3
     #   test: curl --fail -s http://localhost/healthcheck || exit 1
 
+  foundry_core_sync_microservice:
+    image: truecommerce/foundry.core.sync.microservice:2.5.0.alpha-3
+    depends_on:
+      - foundry_core_security_microservice
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # Foundry root url
+      - Foundry__RootUrl=http://foundry.core.apigateway.microservice
+      # Core Sync Microservice SQL connection string
+      - Foundry__Sync__SQLConnection=<Sync DB connection string>
+      # CORS whitelist
+      #- Foundry__Sync__CorsOriginAllowed=host1,host2,host3
+      # RabbitMQ connection string
+      - Foundry__RabbitMQ__Host=rabbitmq://rabbitmq
+      # RabbitMQ user
+      - Foundry__RabbitMQ__User=<rabbitmq user>
+      # RabbitMQ password
+      - Foundry__RabbitMQ__Password=<rabbitmq password>
+      # RabbitMQ timeout
+      - Foundry__RabbitMQ__Timeout=0.00:01:00
+      #elasticsearch
+      - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
+    expose:
+      - "80"
+    # healthcheck:
+    #   start_period: 30s
+    #   interval: 1m30s
+    #   timeout: 10s
+    #   retries: 3
+    #   test: curl --fail -s http://localhost/healthcheck || exit 1
+
   foundry.core.apigateway.microservice:
     depends_on:
       - foundry_core_security_microservice
-    image: truecommerce/foundry.core.apigateway.microservice:2.5.0.alpha-2
+      - foundry_core_sync_microservice
+    image: truecommerce/foundry.core.apigateway.microservice:2.5.0.alpha-3
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ReverseProxy__Clusters__security_microservice__Destinations__security_microservice/destination1__Address=http://foundry_core_security_microservice
+      - ReverseProxy__Clusters__sync_microservice__Destinations__sync_microservice/destination1__Address=http://foundry_core_sync_microservice
     ports:
       - "30100:80"
 
