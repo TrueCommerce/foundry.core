@@ -127,7 +127,7 @@ services:
     #   test: curl --fail -s http://localhost/healthcheck || exit 1
 
   foundry_core_sync_microservice:
-    image: truecommerce/foundry.core.sync.microservice:2.5.0.alpha-3
+    image: truecommerce/foundry.core.sync.microservice:2.5.0.alpha-3_1
     depends_on:
       - foundry_core_security_microservice
     restart: always
