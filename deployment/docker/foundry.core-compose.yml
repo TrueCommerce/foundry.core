@@ -51,7 +51,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.maintenance:2.5.0.alpha-3
+    image: truecommerce/foundry.core.security.maintenance:2.5.0.alpha-4
     restart: always
     environment:
       # Core Security Microservice SQL connection string
@@ -86,7 +86,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.microservice:2.5.0.alpha-3
+    image: truecommerce/foundry.core.security.microservice:2.5.0.alpha-4
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -127,7 +127,7 @@ services:
     #   test: curl --fail -s http://localhost/healthcheck || exit 1
 
   foundry_core_sync_microservice:
-    image: truecommerce/foundry.core.sync.microservice:2.5.0.alpha-3_1
+    image: truecommerce/foundry.core.sync.microservice:2.5.0.alpha-4
     depends_on:
       - foundry_core_security_microservice
     restart: always
@@ -162,7 +162,7 @@ services:
     depends_on:
       - foundry_core_security_microservice
       - foundry_core_sync_microservice
-    image: truecommerce/foundry.core.apigateway.microservice:2.5.0.alpha-3
+    image: truecommerce/foundry.core.apigateway.microservice:2.5.0.alpha-4
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
