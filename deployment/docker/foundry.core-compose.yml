@@ -189,7 +189,7 @@ services:
       - foundry_core_security_microservice
       - foundry_core_sync_microservice
       - foundry_core_configuration_microservice
-    image: truecommerce/foundry.core.apigateway.microservice:2.5.0.alpha-4
+    image: truecommerce/foundry.core.apigateway.microservice:2.5.0.beta-1
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
