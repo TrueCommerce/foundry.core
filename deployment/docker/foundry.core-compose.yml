@@ -51,7 +51,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.maintenance:2.5.0.alpha-4
+    image: truecommerce/foundry.core.security.maintenance:2.5.0.beta-1
     restart: always
     environment:
       # Core Security Microservice SQL connection string
@@ -86,7 +86,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.microservice:2.5.0.alpha-4
+    image: truecommerce/foundry.core.security.microservice:2.5.0.beta-1
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -111,10 +111,12 @@ services:
       #elasticsearch
       - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
       # Cloud license server connection string
-      - Foundry__Security__CloudLicenseService=https://licensing.truecommerce.com/LicensingManagement/LicenseManagerServer.svc
+      - Foundry__CloudLicenseService=https://licensing.truecommerce.com/LicensingManagement/LicenseManagerServer.svc
       #- ASPNETCORE_URLS=https://+;http://+
       #- ASPNETCORE_Kestrel__Certificates__Default__Password=<certificate password>
       #- ASPNETCORE_Kestrel__Certificates__Default__Path=/https/<certificate file name>
+      # Core Configuration Microservice SQL connection string
+      - Foundry__Configuration__SQLConnection=<Security DB connection string>
     #volumes:
     #- <certificate folder path>:/https/
     expose:
@@ -127,7 +129,7 @@ services:
     #   test: curl --fail -s http://localhost/healthcheck || exit 1
 
   foundry_core_sync_microservice:
-    image: truecommerce/foundry.core.sync.microservice:2.5.0.alpha-4
+    image: truecommerce/foundry.core.sync.microservice:2.5.0.beta-1
     depends_on:
       - foundry_core_security_microservice
     restart: always
@@ -158,16 +160,42 @@ services:
     #   retries: 3
     #   test: curl --fail -s http://localhost/healthcheck || exit 1
 
+  foundry_core_configuration_microservice:
+    image: truecommerce/foundry.core.configuration.microservice:2.5.0.beta-1
+    depends_on:
+      - foundry_core_security_microservice
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # Foundry root url
+      - Foundry__RootUrl=http://foundry.core.apigateway.microservice
+      # Core Configuration Microservice SQL connection string
+      - Foundry__Configuration__SQLConnection=<Configuration DB connection string>
+      # RabbitMQ connection string
+      - Foundry__RabbitMQ__Host=rabbitmq://rabbitmq
+      # RabbitMQ user
+      - Foundry__RabbitMQ__User=<rabbitmq user>
+      # RabbitMQ password
+      - Foundry__RabbitMQ__Password=<rabbitmq password>
+      # RabbitMQ timeout
+      - Foundry__RabbitMQ__Timeout=0.00:01:00
+      #elasticsearch
+      - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
+    expose:
+      - "80"
+
   foundry.core.apigateway.microservice:
     depends_on:
       - foundry_core_security_microservice
       - foundry_core_sync_microservice
+      - foundry_core_configuration_microservice
     image: truecommerce/foundry.core.apigateway.microservice:2.5.0.alpha-4
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ReverseProxy__Clusters__security_microservice__Destinations__security_microservice/destination1__Address=http://foundry_core_security_microservice
       - ReverseProxy__Clusters__sync_microservice__Destinations__sync_microservice/destination1__Address=http://foundry_core_sync_microservice
+      - ReverseProxy__Clusters__configuration_microservice__Destinations__configuration_microservice/destination1__Address=http://foundry_core_configuration_microservice
     ports:
       - "30100:80"
 
