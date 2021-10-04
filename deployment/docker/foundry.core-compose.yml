@@ -51,7 +51,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.maintenance:2.5.0.beta-1
+    image: truecommerce/foundry.core.security.maintenance:2.5.0.beta-2
     restart: always
     environment:
       # Core Security Microservice SQL connection string
@@ -86,7 +86,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.microservice:2.5.0.beta-1
+    image: truecommerce/foundry.core.security.microservice:2.5.0.beta-2
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -100,6 +100,16 @@ services:
       - Foundry__Security__OverrideUserOnLogOn=true
       # CORS whitelist
       #- Foundry__Security__CorsOriginAllowed=host1,host2,host3
+      # MFA: indicates whether MFA is allowed
+      - Foundry__Security__MFA__Allowed=true
+      # MFA: indicates whether to allow old non MFA methods like LogOn
+      - Foundry__Security__MFA__NonMFAMethodsAllowed=true
+      # MFA: CDYNE key (MFA SMS provider)
+      #- Foundry__Security__MFA__CDYNEKey=<CDYNE Key>
+      # MFA: Generated secret code timeout
+      - Foundry__Security__MFA__CodeTimeout=0.00:05:00
+      # MFA: For how long to keep MFA saved node IP (30 days by default)
+      - Foundry__Security__MFA__KeepNodesTimeout=30.00:00:00
       # RabbitMQ connection string
       - Foundry__RabbitMQ__Host=rabbitmq://rabbitmq
       # RabbitMQ user
@@ -129,7 +139,7 @@ services:
     #   test: curl --fail -s http://localhost/healthcheck || exit 1
 
   foundry_core_sync_microservice:
-    image: truecommerce/foundry.core.sync.microservice:2.5.0.beta-1
+    image: truecommerce/foundry.core.sync.microservice:2.5.0.beta-2
     depends_on:
       - foundry_core_security_microservice
     restart: always
@@ -161,7 +171,7 @@ services:
     #   test: curl --fail -s http://localhost/healthcheck || exit 1
 
   foundry_core_configuration_microservice:
-    image: truecommerce/foundry.core.configuration.microservice:2.5.0.beta-1
+    image: truecommerce/foundry.core.configuration.microservice:2.5.0.beta-2
     depends_on:
       - foundry_core_security_microservice
     restart: always
@@ -189,7 +199,7 @@ services:
       - foundry_core_security_microservice
       - foundry_core_sync_microservice
       - foundry_core_configuration_microservice
-    image: truecommerce/foundry.core.apigateway.microservice:2.5.0.beta-1
+    image: truecommerce/foundry.core.apigateway.microservice:2.5.0.beta-2
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
