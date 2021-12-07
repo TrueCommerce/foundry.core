@@ -126,7 +126,7 @@ services:
       #- ASPNETCORE_Kestrel__Certificates__Default__Password=<certificate password>
       #- ASPNETCORE_Kestrel__Certificates__Default__Path=/https/<certificate file name>
       # Core Configuration Microservice SQL connection string
-      - Foundry__Configuration__SQLConnection=<Security DB connection string>
+      - Foundry__Configuration__SQLConnection=<Configuration DB connection string>
     #volumes:
     #- <certificate folder path>:/https/
     expose:
