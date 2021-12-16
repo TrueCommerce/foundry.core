@@ -203,9 +203,9 @@ services:
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ReverseProxy__Clusters__security_microservice__Destinations__security_microservice/destination1__Address=http://foundry_core_security_microservice
-      - ReverseProxy__Clusters__sync_microservice__Destinations__sync_microservice/destination1__Address=http://foundry_core_sync_microservice
-      - ReverseProxy__Clusters__configuration_microservice__Destinations__configuration_microservice/destination1__Address=http://foundry_core_configuration_microservice
+      - ReverseProxy__Clusters__security_microservice__Destinations__security_microservice_destination1__Address=http://foundry_core_security_microservice
+      - ReverseProxy__Clusters__sync_microservice__Destinations__sync_microservice_destination1__Address=http://foundry_core_sync_microservice
+      - ReverseProxy__Clusters__configuration_microservice__Destinations__configuration_microservice_destination1__Address=http://foundry_core_configuration_microservice
     ports:
       - "30100:80"
 
