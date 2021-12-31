@@ -181,6 +181,8 @@ services:
       - Foundry__RootUrl=http://foundry.core.apigateway.microservice
       # Core Configuration Microservice SQL connection string
       - Foundry__Configuration__SQLConnection=<Configuration DB connection string>
+      # standard url prefix, will be excluded from tenant configuration detection
+      # - Foundry__Configuration__StandardUrlPrefix=<standard login page host name>
       # RabbitMQ connection string
       - Foundry__RabbitMQ__Host=rabbitmq://rabbitmq
       # RabbitMQ user
