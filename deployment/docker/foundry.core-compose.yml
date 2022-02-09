@@ -86,7 +86,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.microservice:2.5.0.rc6_2
+    image: truecommerce/foundry.core.security.microservice:2.5.0.rc6_3
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
