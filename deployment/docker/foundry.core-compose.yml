@@ -92,6 +92,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       # Core Security Microservice SQL connection string
       - Foundry__Security__SQLConnection=<Security DB connection string>
+      # Core Configuration Microservice SQL connection string
+      - Foundry__Configuration__SQLConnection=<Configuration DB connection string>
       # JWT secret
       - Foundry__Security__JwtSecret=<Jwt Secret>
       # JWT default expire time
@@ -130,7 +132,7 @@ services:
     #volumes:
     #- <certificate folder path>:/https/
     expose:
-      - "80"
+      - "8080"
     # healthcheck:
     #   start_period: 30s
     #   interval: 1m30s
@@ -162,7 +164,7 @@ services:
       #elasticsearch
       - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
     expose:
-      - "80"
+      - "8080"
     # healthcheck:
     #   start_period: 30s
     #   interval: 1m30s
@@ -194,7 +196,7 @@ services:
       #elasticsearch
       - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
     expose:
-      - "80"
+      - "8080"
 
   foundry.core.apigateway.microservice:
     depends_on:
@@ -205,9 +207,9 @@ services:
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ReverseProxy__Clusters__security_microservice__Destinations__security_microservice_destination1__Address=http://foundry_core_security_microservice
-      - ReverseProxy__Clusters__sync_microservice__Destinations__sync_microservice_destination1__Address=http://foundry_core_sync_microservice
-      - ReverseProxy__Clusters__configuration_microservice__Destinations__configuration_microservice_destination1__Address=http://foundry_core_configuration_microservice
+      - ReverseProxy__Clusters__security_microservice__Destinations__security_microservice_destination1__Address=http://foundry_core_security_microservice:8080
+      - ReverseProxy__Clusters__sync_microservice__Destinations__sync_microservice_destination1__Address=http://foundry_core_sync_microservice:8080
+      - ReverseProxy__Clusters__configuration_microservice__Destinations__configuration_microservice_destination1__Address=http://foundry_core_configuration_microservice:8080
     ports:
       - "30100:80"
 
