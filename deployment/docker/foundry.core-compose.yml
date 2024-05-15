@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   rabbitmq:
-    image: rabbitmq:3.8.2-management-alpine
+    image: rabbitmq:3.9.8-management-alpine
     restart: always
     environment:
       # RabbitMQ user
@@ -14,7 +14,7 @@ services:
       - 15672:15672
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
     container_name: elasticsearch
     restart: always
     environment:
@@ -24,6 +24,7 @@ services:
       - discovery.zen.minimum_master_nodes=1
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - xpack.security.enabled=false
     ulimits:
       memlock:
         soft: -1
@@ -36,7 +37,7 @@ services:
   kibana:
     depends_on:
       - elasticsearch
-    image: docker.elastic.co/kibana/kibana:7.4.2
+    image: docker.elastic.co/kibana/kibana:7.15.1
     restart: always
     environment:
       - server.host=0
