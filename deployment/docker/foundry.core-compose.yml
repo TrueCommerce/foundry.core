@@ -52,7 +52,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.maintenance:2.5.0.rc7
+    image: truecommerce/foundry.core.security.maintenance:[version tag]
     restart: always
     environment:
       # Core Security Microservice SQL connection string
@@ -87,7 +87,7 @@ services:
       - rabbitmq
       - elasticsearch
       - kibana
-    image: truecommerce/foundry.core.security.microservice:2.5.0.rc7
+    image: truecommerce/foundry.core.security.microservice:[version tag]
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -140,7 +140,7 @@ services:
     #   test: curl --fail -s http://localhost/healthcheck || exit 1
 
   foundry_core_sync_microservice:
-    image: truecommerce/foundry.core.sync.microservice:2.5.0.rc7
+    image: truecommerce/foundry.core.sync.microservice:[version tag]
     depends_on:
       - foundry_core_security_microservice
     restart: always
@@ -172,7 +172,7 @@ services:
     #   test: curl --fail -s http://localhost/healthcheck || exit 1
 
   foundry_core_configuration_microservice:
-    image: truecommerce/foundry.core.configuration.microservice:2.5.0.rc7
+    image: truecommerce/foundry.core.configuration.microservice:[version tag]
     depends_on:
       - foundry_core_security_microservice
     restart: always
@@ -197,18 +197,46 @@ services:
     expose:
       - "80"
 
+  foundry_core_localization_microservice:
+    image: truecommerce/foundry.core.localization.microservice:[version tag]
+    depends_on:
+      - foundry_core_security_microservice
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # Foundry root url
+      - Foundry__RootUrl=http://foundry.core.apigateway.microservice
+      # Core Configuration Microservice SQL connection string
+      - Foundry__Configuration__SQLConnection=<Localization DB connection string>
+      # standard url prefix, will be excluded from tenant configuration detection
+      # - Foundry__localization__StandardUrlPrefix=<standard login page host name>
+      # RabbitMQ connection string
+      - Foundry__RabbitMQ__Host=rabbitmq://rabbitmq
+      # RabbitMQ user
+      - Foundry__RabbitMQ__User=<rabbitmq user>
+      # RabbitMQ password
+      - Foundry__RabbitMQ__Password=<rabbitmq password>
+      # RabbitMQ timeout
+      - Foundry__RabbitMQ__Timeout=0.00:01:00
+      #elasticsearch
+      - Logging__Elasticsearch__nodeUris=http://elasticsearch:9200
+    expose:
+      - "80"
+
   foundry.core.apigateway.microservice:
     depends_on:
       - foundry_core_security_microservice
       - foundry_core_sync_microservice
       - foundry_core_configuration_microservice
-    image: truecommerce/foundry.core.apigateway.microservice:2.5.0.rc7
+      - foundry_core_localization_microservice
+    image: truecommerce/foundry.core.apigateway.microservice:[version tag]
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ReverseProxy__Clusters__security_microservice__Destinations__security_microservice_destination1__Address=http://foundry_core_security_microservice
       - ReverseProxy__Clusters__sync_microservice__Destinations__sync_microservice_destination1__Address=http://foundry_core_sync_microservice
       - ReverseProxy__Clusters__configuration_microservice__Destinations__configuration_microservice_destination1__Address=http://foundry_core_configuration_microservice
+      - ReverseProxy__Clusters__localization_microservice__Destinations__localization_microservice_destination1__Address=http://foundry_core_localization_microservice
     ports:
       - "30100:80"
 
