@@ -210,6 +210,8 @@ services:
       - Foundry__Localization__SQLConnection=<Localization DB connection string>
       # standard url prefix, will be excluded from tenant configuration detection
       # - Foundry__localization__StandardUrlPrefix=<standard login page host name>
+      # LocalizeTokens auto create/update tokens
+      # - Foundry__Localization__AutoCreateUpdateTokens=false
       # RabbitMQ connection string
       - Foundry__RabbitMQ__Host=rabbitmq://rabbitmq
       # RabbitMQ user
