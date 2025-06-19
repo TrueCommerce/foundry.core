@@ -107,8 +107,9 @@ services:
       - Foundry__Security__MFA__Allowed=true
       # MFA: indicates whether to allow old non MFA methods like LogOn
       - Foundry__Security__MFA__NonMFAMethodsAllowed=true
-      # MFA: CDYNE key (MFA SMS provider)
-      #- Foundry__Security__MFA__CDYNEKey=<CDYNE Key>
+      #- Foundry__Security__MFA__TwilioAccountSid=
+      #- Foundry__Security__MFA__TwilioAuthToken=
+      #- Foundry__Security__MFA__TwilioPhoneFrom=
       # MFA: Generated secret code timeout
       - Foundry__Security__MFA__CodeTimeout=0.00:05:00
       # MFA: For how long to keep MFA saved node IP (30 days by default)
